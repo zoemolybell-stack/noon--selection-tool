@@ -9,10 +9,13 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_VAULT_ROOT = Path(r"C:\Users\Admin\Documents\Obsidian Vault\Noon")
-DEFAULT_STRUCTURE_DIR = "系统架构知识库"
-DEFAULT_METHOD_DIR = "可复用方法论"
-DEFAULT_JSON_OUTPUT = Path("tmp") / "obsidian_context_snapshot.json"
+DEFAULT_VAULT_ROOT = Path(r"C:\Users\Admin\Documents\Obsidian Vault\noon")
+DEFAULT_KNOWLEDGE_ROOT = Path("knowledge")
+DEFAULT_STRUCTURE_DIR = "architecture"
+DEFAULT_METHOD_DIR = "methods"
+DEFAULT_VAULT_STRUCTURE_DIR = "系统架构知识库"
+DEFAULT_VAULT_METHOD_DIR = "可复用方法论"
+DEFAULT_JSON_OUTPUT = Path("artifacts") / "knowledge" / "obsidian_context_snapshot.json"
 DEFAULT_MAX_MILESTONES = 8
 
 
@@ -28,11 +31,18 @@ class Milestone:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Sync authoritative repo docs into the Noon Obsidian knowledge base."
+        description=(
+            "Generate repository knowledge notes from authoritative repo docs "
+            "and optionally mirror managed notes into the Noon Obsidian Vault."
+        )
     )
-    parser.add_argument("--vault-root", default=str(DEFAULT_VAULT_ROOT))
+    parser.add_argument("--knowledge-root", default=str(DEFAULT_KNOWLEDGE_ROOT))
     parser.add_argument("--structure-dir", default=DEFAULT_STRUCTURE_DIR)
     parser.add_argument("--method-dir", default=DEFAULT_METHOD_DIR)
+    parser.add_argument("--vault-root", default=str(DEFAULT_VAULT_ROOT))
+    parser.add_argument("--vault-structure-dir", default=DEFAULT_VAULT_STRUCTURE_DIR)
+    parser.add_argument("--vault-method-dir", default=DEFAULT_VAULT_METHOD_DIR)
+    parser.add_argument("--skip-vault-mirror", action="store_true")
     parser.add_argument("--json-output", default=str(DEFAULT_JSON_OUTPUT))
     parser.add_argument("--max-milestones", type=int, default=DEFAULT_MAX_MILESTONES)
     parser.add_argument("--dry-run", action="store_true")
@@ -41,6 +51,11 @@ def parse_args() -> argparse.Namespace:
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
+
+
+def resolve_repo_path(root: Path, raw_path: str) -> Path:
+    path = Path(raw_path)
+    return path if path.is_absolute() else root / path
 
 
 def docs_root(root: Path) -> Path:
@@ -69,6 +84,11 @@ def write_text(path: Path, content: str, dry_run: bool) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8", newline="\n")
     print(f"[updated] {path}")
+
+
+def write_documents(target_root: Path, docs: dict[str, str], dry_run: bool) -> None:
+    for filename, content in docs.items():
+        write_text(target_root / filename, content, dry_run)
 
 
 def section(text: str, level: int, title: str) -> str:
@@ -327,6 +347,28 @@ def build_structure_docs(snapshot: dict[str, Any], root: Path) -> dict[str, str]
 
 """ + "\n\n".join(milestone_blocks)
 
+    files["99-同步说明.md"] = f"""# 同步说明
+
+<!-- generated: scripts/sync_obsidian_context.py -->
+
+更新时间：`{generated_at}`
+
+## 当前规则
+- `knowledge/` 目录是 Git 管理的知识库主源
+- 这些 managed notes 由 `scripts/sync_obsidian_context.py` 从 repo 正式文档生成
+- Obsidian 只作为阅读、检索和手工知识沉淀入口，不再承载完整代码工作副本
+
+## 变更顺序
+1. 先更新 repo 正式文档
+2. 再运行知识刷新脚本
+3. 若仍保留旧 Vault 目录镜像，再同步镜像
+
+## 来源
+- [PROJECT_WHITEPAPER.md]({md_link(docs["whitepaper"])})
+- [DEV_HANDOFF.md]({md_link(docs["handoff"])})
+- [DEV_COLLAB_LOG.md]({md_link(docs["collab"])})
+"""
+
     return files
 
 
@@ -337,6 +379,30 @@ def build_method_docs(snapshot: dict[str, Any], root: Path) -> dict[str, str]:
     current_release = snapshot["current_release"] or "unknown"
 
     files: dict[str, str] = {}
+    files["00-可复用总览.md"] = f"""# 可复用总览
+
+<!-- generated: scripts/sync_obsidian_context.py -->
+
+更新时间：`{generated_at}`
+
+## 这层文档的目的
+- 把当前 Noon 项目沉淀成后续爬虫 / ERP / 运行治理项目可复用的方法论
+- 记录模式，不记录只在当前现场有效的一次性上下文
+
+## 当前可复用主题
+- 爬虫系统设计模式
+- ERP 工作台 UI 交付模式
+- 调度与运行治理模式
+- NAS 发布 / 迁移 / 回滚模式
+- 防回归与质量门槛
+- Codex 多窗口协作方式
+
+## 来源
+- [PROJECT_WHITEPAPER.md]({md_link(docs["whitepaper"])})
+- [DEV_HANDOFF.md]({md_link(docs["handoff"])})
+- [DEV_COLLAB_LOG.md]({md_link(docs["collab"])})
+"""
+
     files["00-开发与交付工作流.md"] = f"""# 开发与交付工作流
 
 <!-- generated: scripts/sync_obsidian_context.py -->
@@ -351,7 +417,7 @@ def build_method_docs(snapshot: dict[str, Any], root: Path) -> dict[str, str]:
 
 ## 最新绿色基线规则
 - repo 文档里的 latest green pointers 是唯一事实源
-- Obsidian 只做镜像，不单独指定新的 green run
+- Obsidian 只做知识入口，不单独指定新的 green run
 - 当前 stabilization：`{latest_runs["stabilization"] or "unknown"}`
 - 当前 runtime-center：`{latest_runs["runtime_center"] or "unknown"}`
 
@@ -403,24 +469,48 @@ def write_snapshot(json_output: Path, snapshot: dict[str, Any], dry_run: bool) -
     print(f"[updated] {json_output}")
 
 
+def maybe_mirror_to_vault(
+    vault_root: Path,
+    structure_docs: dict[str, str],
+    method_docs: dict[str, str],
+    vault_structure_dir: str,
+    vault_method_dir: str,
+    dry_run: bool,
+) -> None:
+    if not vault_root.exists():
+        print(f"[skip_vault] vault root does not exist: {vault_root}")
+        return
+    write_documents(vault_root / vault_structure_dir, structure_docs, dry_run)
+    write_documents(vault_root / vault_method_dir, method_docs, dry_run)
+
+
 def main() -> None:
     args = parse_args()
     root = repo_root()
     snapshot = build_snapshot(root, args.max_milestones)
 
-    vault_root = Path(args.vault_root)
-    structure_root = vault_root / args.structure_dir
-    method_root = vault_root / args.method_dir
+    knowledge_root = resolve_repo_path(root, args.knowledge_root)
+    structure_root = knowledge_root / args.structure_dir
+    method_root = knowledge_root / args.method_dir
+    json_output = resolve_repo_path(root, args.json_output)
 
     structure_docs = build_structure_docs(snapshot, root)
     method_docs = build_method_docs(snapshot, root)
 
-    for filename, content in structure_docs.items():
-        write_text(structure_root / filename, content, args.dry_run)
-    for filename, content in method_docs.items():
-        write_text(method_root / filename, content, args.dry_run)
+    write_documents(structure_root, structure_docs, args.dry_run)
+    write_documents(method_root, method_docs, args.dry_run)
 
-    write_snapshot(Path(args.json_output), snapshot, args.dry_run)
+    if not args.skip_vault_mirror:
+        maybe_mirror_to_vault(
+            vault_root=Path(args.vault_root),
+            structure_docs=structure_docs,
+            method_docs=method_docs,
+            vault_structure_dir=args.vault_structure_dir,
+            vault_method_dir=args.vault_method_dir,
+            dry_run=args.dry_run,
+        )
+
+    write_snapshot(json_output, snapshot, args.dry_run)
 
 
 if __name__ == "__main__":

@@ -1,39 +1,59 @@
 # OBSIDIAN SYNC
 
-Last Updated: 2026-04-10
+Last Updated: 2026-04-20
 
 ## Purpose
 
-Keep the Obsidian Vault copy of the Noon project aligned with the repo without turning the Vault into a second source of truth.
+Keep the Obsidian knowledge view aligned with the Git-managed knowledge base without turning the Vault into a second source of truth.
 
-The repo remains authoritative.
+The canonical sources are:
 
-The Vault is for:
-- fast architecture recall
-- current project context
-- reusable crawler / ERP / ops patterns
+- Git code and repo docs
+- repo-managed `knowledge/` Markdown
 
-## Source of Truth
+Obsidian is a knowledge UI, not the primary storage for the full repo.
 
-The sync script reads from:
-- [PROJECT_WHITEPAPER.md](D:/claude%20noon%20v1/noon-selection-tool/docs/PROJECT_WHITEPAPER.md)
-- [DEV_HANDOFF.md](D:/claude%20noon%20v1/noon-selection-tool/docs/DEV_HANDOFF.md)
-- [DEV_COLLAB_LOG.md](D:/claude%20noon%20v1/noon-selection-tool/docs/DEV_COLLAB_LOG.md)
-- [CODEBASE_MAP.md](D:/claude%20noon%20v1/noon-selection-tool/docs/CODEBASE_MAP.md)
-- [NAS_DEPLOYMENT_RUNBOOK.md](D:/claude%20noon%20v1/noon-selection-tool/docs/NAS_DEPLOYMENT_RUNBOOK.md)
-- [NAS_RELEASE_ROLLBACK.md](D:/claude%20noon%20v1/noon-selection-tool/docs/NAS_RELEASE_ROLLBACK.md)
-- [OPS_RETENTION_POLICY.md](D:/claude%20noon%20v1/noon-selection-tool/docs/OPS_RETENTION_POLICY.md)
+## Canonical Structure
 
-## Generated Areas
+The current architecture is:
 
-The script generates and overwrites only managed notes:
+- repo docs: `D:\claude noon v1\noon-selection-tool\docs\`
+- repo knowledge: `D:\claude noon v1\knowledge\`
+- optional Vault mirror: `C:\Users\Admin\Documents\Obsidian Vault\noon\`
 
-- `C:\Users\Admin\Documents\Obsidian Vault\Noon\系统架构知识库\`
-- `C:\Users\Admin\Documents\Obsidian Vault\Noon\可复用方法论\`
+## Managed Notes
 
-It does not touch:
-- `C:\Users\Admin\Documents\Obsidian Vault\Noon\爬虫开发需求笔记\`
-- `C:\Users\Admin\Documents\Obsidian Vault\Noon\noon开发日记\`
+`scripts/sync_obsidian_context.py` now does two things:
+
+1. Generate managed notes into repo knowledge:
+   - `knowledge\architecture\`
+   - `knowledge\methods\`
+2. Optionally mirror the same managed notes into legacy Vault folders:
+   - `系统架构知识库\`
+   - `可复用方法论\`
+
+The repo copy is authoritative.
+
+## What Obsidian Should Contain
+
+Recommended:
+
+- architecture knowledge
+- reusable methods
+- requirements notes
+- project ops notes
+- dev journal
+- pricing / reference notes
+
+Not recommended:
+
+- full repo workspace copies
+- `runtime_data/`
+- `data/`
+- `logs/`
+- `tmp/`
+- `venv/`
+- database files
 
 ## Manual Run
 
@@ -43,13 +63,19 @@ From repo root:
 powershell -ExecutionPolicy Bypass -File scripts\run_obsidian_sync.ps1
 ```
 
+Repo-only refresh:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\run_obsidian_sync.ps1 --skip-vault-mirror
+```
+
 Dry run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\run_obsidian_sync.ps1 --dry-run
 ```
 
-## Automatic Sync
+## Automatic Refresh
 
 Register Windows scheduled tasks:
 
@@ -57,27 +83,24 @@ Register Windows scheduled tasks:
 powershell -ExecutionPolicy Bypass -File scripts\register_obsidian_sync_task.ps1
 ```
 
-This creates:
-- one task at user logon
-- one daily task at `09:00`
+This still keeps the old task name for compatibility, but its role is now:
 
-Remove the tasks:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\unregister_obsidian_sync_task.ps1
-```
+- refresh repo-managed knowledge notes
+- optionally mirror managed notes to the legacy Vault folders
 
 ## Recommended Workflow
 
-1. Update repo docs first
-2. Run the sync script
-3. Review generated Vault notes
-4. Keep manual notes only for operator thoughts, open questions, and daily journaling
+1. Update repo docs or repo knowledge first
+2. Run the knowledge refresh script
+3. Open the repo `knowledge/` directly in Obsidian, or mirror / link it into the Vault
+4. Keep personal drafts outside the Git-managed paths until they are ready to share
 
-## Design Rule
+## Deprecated Path
 
-Do not edit generated Obsidian notes as if they were authoritative design docs.
+Do not continue using full repo migration into the Vault.
 
-If the project truth changes:
-- update repo docs
-- rerun sync
+`scripts/migrate_repo_to_obsidian_workspace.ps1` is deprecated. Use:
+
+- `scripts/run_obsidian_sync.ps1`
+- `scripts/link_repo_knowledge_into_obsidian.ps1`
+- [GITHUB_OBSIDIAN_KNOWLEDGE_PLAN.md](D:/claude%20noon%20v1/noon-selection-tool/docs/GITHUB_OBSIDIAN_KNOWLEDGE_PLAN.md)
