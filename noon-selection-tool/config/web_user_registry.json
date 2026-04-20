@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "local_beta_role": "admin",
+    "local_beta_allow_role_switch": true,
+    "lan_role": "operator",
+    "lan_allow_role_switch": false,
+    "access_email_role": "operator",
+    "access_email_allow_role_switch": false
+  },
+  "users": {
+    "huangqing@ykwen.cn": {
+      "role": "operator",
+      "display_name": "huangqing",
+      "allow_role_switch": false,
+      "notes": "operator only; crawler admin access is disabled"
+    }
+  }
+}

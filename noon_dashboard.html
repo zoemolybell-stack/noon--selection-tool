@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noon Market Intelligence Dashboard</title>
+<style>
+:root {
+  --bg: #f0f2f5; --card: #fff;
+  --primary: #6c5ce7; --primary-light: #a29bfe; --primary-dark: #5a4bd1;
+  --green: #00b894; --green-bg: #e6f9f3;
+  --red: #d63031; --red-bg: #fde8e8;
+  --blue: #0984e3; --orange: #e17055; --teal: #00cec9; --yellow: #fdcb6e;
+  --text: #2d3436; --text2: #636e72; --text3: #b2bec3; --border: #dfe6e9;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08); --radius: 10px;
+  --sidebar-w: 280px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+
+/* ── Header ── */
+.header { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: #fff; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(108,92,231,0.3); }
+.header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+.header h1 span { font-weight: 400; opacity: 0.85; font-size: 13px; margin-left: 10px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+
+/* ── Upload Zone ── */
+.upload-zone-wrapper { padding: 20px 28px; background: var(--card); border-bottom: 1px solid var(--border); }
+.upload-zone { border: 2px dashed var(--primary-light); border-radius: var(--radius); padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: linear-gradient(135deg, rgba(108,92,231,0.03), rgba(162,155,254,0.06)); }
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--primary); background: linear-gradient(135deg, rgba(108,92,231,0.08), rgba(162,155,254,0.12)); transform: translateY(-1px); }
+.upload-zone .icon { font-size: 48px; margin-bottom: 8px; }
+.upload-zone h3 { color: var(--primary); font-size: 16px; margin-bottom: 4px; }
+.upload-zone p { color: var(--text2); font-size: 13px; }
+.upload-zone input { display: none; }
+.file-info { margin-top: 10px; font-size: 13px; color: var(--green); font-weight: 600; display: none; }
+
+/* ── Layout ── */
+.app-layout { display: flex; min-height: calc(100vh - 160px); }
+.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--card); border-right: 1px solid var(--border); padding: 16px; overflow-y: auto; max-height: calc(100vh - 160px); position: sticky; top: 64px; }
+.main-content { flex: 1; padding: 16px; min-width: 0; overflow-x: hidden; }
+
+/* ── Sidebar Filters ── */
+.filter-section { margin-bottom: 20px; }
+.filter-section h4 { font-size: 13px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.filter-section h4::before { content: ''; width: 3px; height: 14px; background: var(--primary); border-radius: 2px; }
+.multi-select { max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 4px; }
+.multi-select label { display: flex; align-items: center; padding: 4px 8px; font-size: 12px; cursor: pointer; border-radius: 4px; transition: background 0.15s; }
+.multi-select label:hover { background: rgba(108,92,231,0.06); }
+.multi-select input { margin-right: 6px; accent-color: var(--primary); }
+.range-slider { margin-top: 4px; }
+.range-slider input[type=range] { width: 100%; accent-color: var(--primary); }
+.range-slider .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-top: 2px; }
+.filter-btn { width: 100%; padding: 8px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.filter-btn:hover { background: var(--primary-dark); }
+.filter-btn.reset { background: transparent; color: var(--text2); border: 1px solid var(--border); margin-top: 6px; }
+.filter-btn.reset:hover { background: var(--bg); }
+
+/* ── Tabs ── */
+.tab-bar { display: flex; gap: 0; margin-bottom: 16px; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.tab-btn { flex: 1; padding: 12px 8px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text2); transition: all 0.2s; position: relative; }
+.tab-btn:hover { color: var(--primary); background: rgba(108,92,231,0.04); }
+.tab-btn.active { color: var(--primary); background: rgba(108,92,231,0.08); }
+.tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── KPI Cards ── */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.kpi-card:nth-child(1)::before { background: var(--primary); }
+.kpi-card:nth-child(2)::before { background: var(--blue); }
+.kpi-card:nth-child(3)::before { background: var(--orange); }
+.kpi-card:nth-child(4)::before { background: var(--green); }
+.kpi-card:nth-child(5)::before { background: var(--teal); }
+.kpi-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.kpi-value { font-size: 26px; font-weight: 700; color: var(--text); }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── Chart Containers ── */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.chart-grid.full { grid-template-columns: 1fr; }
+.chart-box { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.chart-box h3 { font-size: 14px; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.chart-box h3 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap canvas { width: 100% !important; }
+
+/* ── Tables ── */
+.data-table-wrap { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table thead th { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; position: sticky; top: 0; white-space: nowrap; cursor: pointer; user-select: none; }
+.data-table thead th:hover { background: var(--primary-dark); }
+.data-table thead th .sort-arrow { margin-left: 4px; font-size: 10px; }
+.data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(108,92,231,0.04); }
+.data-table tbody td { padding: 8px 12px; white-space: nowrap; }
+.data-table tbody tr.expanded-row td { white-space: normal; background: rgba(108,92,231,0.02); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.badge-express { background: #dfe6ff; color: #3d5afe; }
+.badge-noon { background: #fff3cd; color: #856404; }
+.badge-amazon { background: #d4edda; color: #155724; }
+.badge-hot { background: var(--red-bg); color: var(--red); }
+.badge-grade { padding: 2px 10px; }
+.badge-A { background: #C6EFCE; color: #006100; }
+.badge-B { background: #DDEBF7; color: #1F4E79; }
+.badge-C { background: #FFF2CC; color: #7F6000; }
+.badge-D { background: #FCE4D6; color: #843C0C; }
+
+/* ── Product Cards ── */
+.product-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.product-card { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); border-left: 3px solid var(--primary-light); transition: transform 0.2s, box-shadow 0.2s; }
+.product-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.product-card .pc-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-card .pc-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--text2); }
+.product-card .pc-meta .pc-price { color: var(--primary); font-weight: 700; font-size: 16px; }
+.product-card .pc-badges { margin-top: 6px; display: flex; gap: 4px; }
+.product-card .pc-margin { font-size: 11px; margin-top: 4px; }
+.margin-pos { color: var(--green); font-weight: 600; }
+.margin-neg { color: var(--red); font-weight: 600; }
+
+/* ── Deep Dive ── */
+.dd-controls { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+.dd-controls select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; min-width: 300px; }
+.comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.comp-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); text-align: center; }
+.comp-card h4 { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+.comp-card .comp-val { font-size: 22px; font-weight: 700; }
+
+/* ── Search ── */
+.search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.search-bar input { flex: 1; padding: 8px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+.search-bar input:focus { border-color: var(--primary); }
+
+/* ── Empty State ── */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+.empty-state .icon { font-size: 64px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state h3 { font-size: 18px; margin-bottom: 6px; }
+.empty-state p { font-size: 13px; }
+
+/* ── Loading ── */
+.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; }
+.loading-overlay.hidden { display: none; }
+.spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 12px; font-size: 14px; color: var(--text2); }
+.progress-bar { width: 200px; height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.progress-bar .fill { height: 100%; background: var(--primary); width: 0; transition: width 0.3s; }
+
+/* ── CDN Error ── */
+.cdn-error { background: var(--red-bg); border: 1px solid var(--red); border-radius: var(--radius); padding: 20px; margin: 20px; text-align: center; display: none; }
+.cdn-error h3 { color: var(--red); margin-bottom: 6px; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .app-layout { display: block; }
+}
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .header h1 { font-size: 16px; }
+  .tab-btn { font-size: 12px; padding: 10px 4px; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- CDN Error -->
+<div class="cdn-error" id="cdnError">
+  <h3>CDN Library Failed to Load</h3>
+  <p>Chart.js 或 SheetJS 加载失败，请检查网络连接后刷新页面。</p>
+  <p style="margin-top:8px;font-size:12px;color:var(--text2)">Required: Chart.js &amp; SheetJS (xlsx)</p>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">正在解析 Excel 数据...</div>
+  <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>Noon Market Intelligence <span>| 市场洞察面板</span></h1>
+  </div>
+  <div class="header-right">
+    <div class="header-badge" id="headerFileInfo">未加载数据</div>
+  </div>
+</div>
+
+<!-- Upload Zone -->
+<div class="upload-zone-wrapper" id="uploadWrapper">
+  <div class="upload-zone" id="uploadZone">
+    <div class="icon">📊</div>
+    <h3>上传 Excel 报告文件</h3>
+    <p>拖拽 .xlsx 文件到此处，或点击选择文件</p>
+    <p style="font-size:11px;color:var(--text3);margin-top:4px">支持: report_automotive.xlsx / enhanced report / 标准分析报告</p>
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
+    <div class="file-info" id="fileInfo"></div>
+  </div>
+</div>
+
+<!-- Main App (hidden until file loaded) -->
+<div class="app-layout" id="appLayout" style="display:none">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="filter-section">
+      <h4>子类目筛选</h4>
+      <div style="margin-bottom:6px">
+        <input type="text" id="catSearch" placeholder="搜索类目..." style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;outline:none">
+      </div>
+      <div class="multi-select" id="catFilter"></div>
+    </div>
+    <div class="filter-section">
+      <h4>Margin % 范围</h4>
+      <div class="range-slider">
+        <input type="range" id="marginMin" min="-100" max="200" value="-100" step="1">
+        <div class="range-labels"><span id="marginMinLabel">-100%</span><span>Min</span></div>
+      </div>
+      <div class="range-slider" style="margin-top:8px">
+        <input type="range" id="marginMax" min="-100" max="200" value="200" step="1">
+        <div class="range-labels"><span id="marginMaxLabel">200%</span><span>Max</span></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <h4>Express % 范围</h4>
+      <div class="range-slider">
+        <input type="range" id="expressMin" min="0" max="100" value="0" step="1">
+        <div class="range-labels"><span id="expressMinLabel">0%</span><span>Min</span></div>
+      </div>
+      <div class="range-slider" style="margin-top:8px">
+        <input type="range" id="expressMax" min="0" max="100" value="100" step="1">
+        <div class="range-labels"><span id="expressMaxLabel">100%</span><span>Max</span></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <h4>价格范围 (AED)</h4>
+      <div class="range-slider">
+        <input type="range" id="priceMin" min="0" max="5000" value="0" step="10">
+        <div class="range-labels"><span id="priceMinLabel">0</span><span>Min</span></div>
+      </div>
+      <div class="range-slider" style="margin-top:8px">
+        <input type="range" id="priceMax" min="0" max="5000" value="5000" step="10">
+        <div class="range-labels"><span id="priceMaxLabel">5000</span><span>Max</span></div>
+      </div>
+    </div>
+    <button class="filter-btn" onclick="applyFilters()">应用筛选</button>
+    <button class="filter-btn reset" onclick="resetFilters()">重置</button>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="tab-bar">
+      <div class="tab-btn active" data-tab="overview">📈 市场总览</div>
+      <div class="tab-btn" data-tab="deepdive">🔍 品类深潜</div>
+      <div class="tab-btn" data-tab="recommend">🏆 选品推荐</div>
+      <div class="tab-btn" data-tab="compare">💱 Amazon 比价</div>
+    </div>
+
+    <!-- Tab 1: Market Overview -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="kpi-row" id="kpiRow"></div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <h3><span class="dot"></span>蓝海象限图 — Express% vs Median Margin%</h3>
+          <div class="chart-wrap"><canvas id="chartScatter"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <h3><span class="dot" style="background:var(--orange)"></span>Top 20 子类目 — 机会评分</h3>
+          <div class="chart-wrap"><canvas id="chartTopCats"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-grid full">
+        <div class="chart-box">
+          <h3><span class="dot" style="background:var(--blue)"></span>价格分布直方图</h3>
+          <div class="chart-wrap"><canvas id="chartPriceDist"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Category Deep Dive -->
+    <div class="tab-panel" id="tab-deepdive">
+      <div class="dd-controls">
+        <label style="font-weight:600;font-size:13px">选择子类目:</label>
+        <select id="ddCatSelect"><option value="">-- 请选择 --</option></select>
+      </div>
+      <div id="ddContent" style="display:none">
+        <div class="comparison-grid" id="ddComparison"></div>
+        <div class="chart-grid">
+          <div class="chart-box">
+            <h3><span class="dot"></span>类目价格分布</h3>
+            <div class="chart-wrap"><canvas id="chartCatPrice"></canvas></div>
+          </div>
+          <div class="chart-box">
+            <h3><span class="dot" style="background:var(--teal)"></span>竞争雷达图</h3>
+            <div class="chart-wrap"><canvas id="chartRadar"></canvas></div>
+          </div>
+        </div>
+        <h3 style="margin:16px 0 12px;font-size:15px">Top 10 产品</h3>
+        <div class="product-cards" id="ddProducts"></div>
+      </div>
+      <div class="empty-state" id="ddEmpty">
+        <div class="icon">🔍</div>
+        <h3>请选择一个子类目</h3>
+        <p>从下拉菜单中选择类目，查看详细分析</p>
+      </div>
+    </div>
+
+    <!-- Tab 3: Recommendations -->
+    <div class="tab-panel" id="tab-recommend">
+      <div class="search-bar">
+        <input type="text" id="recSearch" placeholder="搜索产品名称、类目...">
+      </div>
+      <div class="chart-box">
+        <div class="data-table-wrap" style="max-height:600px;overflow-y:auto">
+          <table class="data-table" id="recTable">
+            <thead>
+              <tr>
+                <th data-col="rank">排名 <span class="sort-arrow">▼</span></th>
+                <th data-col="subcategory">子类目 <span class="sort-arrow"></span></th>
+                <th data-col="title">产品 <span class="sort-arrow"></span></th>
+                <th data-col="price">价格 <span class="sort-arrow"></span></th>
+                <th data-col="margin">Margin% <span class="sort-arrow"></span></th>
+                <th data-col="reviews">Reviews <span class="sort-arrow"></span></th>
+                <th data-col="express">Express <span class="sort-arrow"></span></th>
+                <th data-col="score">Score <span class="sort-arrow"></span></th>
+              </tr>
+            </thead>
+            <tbody id="recBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="empty-state" id="recEmpty" style="display:none">
+        <div class="icon">🏆</div>
+        <h3>暂无推荐数据</h3>
+        <p>上传的报告中未包含推荐 Sheet</p>
+      </div>
+    </div>
+
+    <!-- Tab 4: Amazon Compare -->
+    <div class="tab-panel" id="tab-compare">
+      <div class="chart-grid">
+        <div class="chart-box">
+          <h3><span class="dot" style="background:var(--orange)"></span>Noon vs Amazon 价格对比 (Top 20)</h3>
+          <div class="chart-wrap"><canvas id="chartPriceCompare"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <h3><span class="dot" style="background:var(--green)"></span>价差% vs Noon Margin%</h3>
+          <div class="chart-wrap"><canvas id="chartDiffScatter"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-box" style="margin-top:16px">
+        <h3><span class="dot" style="background:var(--blue)"></span>Amazon Best Seller / Choice 标记产品</h3>
+        <div class="data-table-wrap" style="max-height:400px;overflow-y:auto">
+          <table class="data-table" id="amzTable">
+            <thead>
+              <tr>
+                <th>产品</th>
+                <th>Noon 价格</th>
+                <th>Amazon 价格</th>
+                <th>价差%</th>
+                <th>Noon Margin%</th>
+                <th>Amazon 标记</th>
+              </tr>
+            </thead>
+            <tbody id="amzBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="empty-state" id="amzEmpty" style="display:none">
+        <div class="icon">💱</div>
+        <h3>暂无 Amazon 比价数据</h3>
+        <p>上传的报告中未包含 Amazon 交叉对比 Sheet</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Empty App State -->
+<div id="emptyApp" style="display:block">
+  <div class="empty-state" style="padding:100px 20px">
+    <div class="icon">📊</div>
+    <h3>上传报告以开始分析</h3>
+    <p>支持标准分析报告和增强版报告格式</p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+<script>
+// ── CDN Check ──
+window.addEventListener('load', () => {
+  if (typeof Chart === 'undefined' || typeof XLSX === 'undefined') {
+    document.getElementById('cdnError').style.display = 'block';
+  }
+});
+
+// ── Global State ──
+const STATE = {
+  raw: {},           // raw sheet data { sheetName: [{...}, ...] }
+  format: null,      // 'standard' | 'enhanced' | 'v1'
+  products: [],      // main product list
+  subcats: [],       // subcategory overview rows
+  recommendations: [],
+  amazonCross: [],
+  filtered: {
+    products: [],
+    subcats: [],
+  },
+  charts: {},        // Chart.js instances
+  sortCol: 'rank',
+  sortAsc: true,
+};
+
+// ── Helpers ──
+function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function pct(v) { return (num(v) * 100).toFixed(1) + '%'; }
+function pctRaw(v) { return num(v).toFixed(1) + '%'; }
+function currency(v) { return num(v).toFixed(2); }
+function safe(v) { return v == null ? '' : String(v); }
+function truncate(s, n) { s = safe(s); return s.length > n ? s.slice(0, n) + '...' : s; }
+
+// ── Column Name Fuzzy Match ──
+function findCol(row, candidates) {
+  const keys = Object.keys(row);
+  for (const c of candidates) {
+    const cl = c.toLowerCase();
+    const found = keys.find(k => k.toLowerCase() === cl);
+    if (found) return found;
+  }
+  for (const c of candidates) {
+    const cl = c.toLowerCase();
+    const found = keys.find(k => k.toLowerCase().includes(cl));
+    if (found) return found;
+  }
+  return null;
+}
+
+function getVal(row, candidates, def) {
+  const col = findCol(row, candidates);
+  return col ? row[col] : (def !== undefined ? def : null);
+}
+
+// ── Upload Handling ──
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+
+function handleFile(file) {
+  if (!file.name.match(/\.xlsx?$/i)) { alert('请上传 .xlsx 文件'); return; }
+  showLoading('正在读取文件...');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      parseWorkbook(e.target.result, file.name);
+    } catch (err) {
+      hideLoading();
+      alert('解析失败: ' + err.message);
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showLoading(text) {
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingText').textContent = text || '处理中...';
+  document.getElementById('progressFill').style.width = '0%';
+}
+function updateProgress(pct, text) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (text) document.getElementById('loadingText').textContent = text;
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// ── Parse Workbook ──
+function parseWorkbook(data, filename) {
+  updateProgress(10, '正在解析工作表...');
+  const wb = XLSX.read(data, { type: 'array', cellDates: true });
+  const sheetNames = wb.SheetNames;
+  console.log('Sheets found:', sheetNames);
+
+  STATE.raw = {};
+  // Detect format
+  const hasEnhanced = sheetNames.some(s => /enhanced|cleaned|smart|opportunities|risk/i.test(s));
+  const hasStandard = sheetNames.some(s => /sub-category|all products|top 100|ad products|amazon/i.test(s));
+  // Also handle the 5-sheet report from excel_report.py
+  const hasV1 = sheetNames.some(s => /赛道总览|利润测算|多平台|供给缺口|原始数据/i.test(s));
+
+  if (hasEnhanced) STATE.format = 'enhanced';
+  else if (hasStandard) STATE.format = 'standard';
+  else if (hasV1) STATE.format = 'v1';
+  else STATE.format = 'unknown';
+
+  updateProgress(20, '正在转换数据...');
+
+  // Parse each sheet with row limit
+  let progress = 20;
+  const step = 60 / sheetNames.length;
+  for (const name of sheetNames) {
+    const ws = wb.Sheets[name];
+    const isLargeSheet = /all products|cleaned|原始数据/i.test(name);
+    const opts = { header: 1, defval: '' };
+    const rawArr = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    const limit = isLargeSheet ? 50000 : rawArr.length;
+    STATE.raw[name] = rawArr.slice(0, limit);
+    progress += step;
+    updateProgress(Math.min(80, progress), `解析: ${name} (${Math.min(limit, rawArr.length)} 行)`);
+  }
+
+  updateProgress(85, '正在提取结构化数据...');
+  extractData();
+  updateProgress(95, '正在渲染图表...');
+
+  // Show app
+  document.getElementById('uploadWrapper').style.display = 'none';
+  document.getElementById('emptyApp').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+  document.getElementById('headerFileInfo').textContent = `${filename} | ${STATE.format}`;
+  document.getElementById('fileInfo').style.display = 'block';
+  document.getElementById('fileInfo').textContent = `✓ ${filename} 已加载`;
+
+  buildFilters();
+  applyFilters();
+  hideLoading();
+}
+
+// ── Extract structured data from sheets ──
+function extractData() {
+  const raw = STATE.raw;
+  const names = Object.keys(raw);
+
+  // Find subcategory sheet
+  let subcatSheet = names.find(n => /enhanced sub/i.test(n))
+    || names.find(n => /sub-category overview/i.test(n))
+    || names.find(n => /category opportunities/i.test(n))
+    || names.find(n => /赛道总览/i.test(n));
+
+  // Find products sheet
+  let productSheet = names.find(n => /cleaned products/i.test(n))
+    || names.find(n => /all products/i.test(n))
+    || names.find(n => /原始数据/i.test(n));
+
+  // Find recommendations sheet
+  let recSheet = names.find(n => /smart top/i.test(n))
+    || names.find(n => /top 100/i.test(n))
+    || names.find(n => /产品级/i.test(n));
+
+  // Find amazon sheet
+  let amzSheet = names.find(n => /amazon/i.test(n))
+    || names.find(n => /多平台/i.test(n))
+    || names.find(n => /供给缺口/i.test(n));
+
+  // Extract subcats
+  STATE.subcats = [];
+  if (subcatSheet && raw[subcatSheet]) {
+    STATE.subcats = raw[subcatSheet].map(r => ({
+      _raw: r,
+      subcategory: getVal(r, ['subcategory', 'sub_category', 'Sub-Category', '子类目', 'category', 'subcat'], ''),
+      product_count: num(getVal(r, ['product_count', 'total_products', 'count', 'products', '产品数'], 0)),
+      express_pct: num(getVal(r, ['express_pct', 'express_%', 'express_percent', 'express_ratio', 'Express%', 'express比例'], 0)),
+      median_margin: num(getVal(r, ['median_margin', 'median_margin_pct', 'avg_margin', 'margin', 'Median Margin%', '中位利润率'], 0)),
+      avg_price: num(getVal(r, ['avg_price', 'median_price', 'mean_price', 'price', '均价'], 0)),
+      opportunity_score: num(getVal(r, ['opportunity_score', 'score', 'total_score', 'composite_score', '综合得分', '机会分'], 0)),
+      grade: getVal(r, ['grade', 'rating', '等级'], ''),
+      review_density: num(getVal(r, ['review_density', 'avg_reviews', 'reviews', '评论密度'], 0)),
+      ad_density: num(getVal(r, ['ad_pct', 'ad_density', 'sponsored_pct', '广告密度'], 0)),
+      has_sales: num(getVal(r, ['products_with_sales', 'has_sales', '有销量产品'], 0)),
+    })).filter(r => r.subcategory);
+  }
+
+  // Extract products
+  STATE.products = [];
+  if (productSheet && raw[productSheet]) {
+    STATE.products = raw[productSheet].map((r, i) => ({
+      _raw: r,
+      idx: i,
+      title: getVal(r, ['title', 'product_title', 'name', 'product_name', '产品名称', '标题'], ''),
+      subcategory: getVal(r, ['subcategory', 'sub_category', 'Sub-Category', '子类目', 'category'], ''),
+      price: num(getVal(r, ['price', 'sale_price', 'current_price', 'noon_price', '售价', '价格'], 0)),
+      margin: num(getVal(r, ['margin', 'margin_pct', 'profit_margin', 'Margin%', '利润率'], 0)),
+      reviews: num(getVal(r, ['reviews', 'review_count', 'num_reviews', '评论数'], 0)),
+      rating: num(getVal(r, ['rating', 'star_rating', '评分'], 0)),
+      express: getVal(r, ['express', 'is_express', 'fulfillment', 'Express', '配送'], ''),
+      sales: num(getVal(r, ['sales', 'estimated_sales', 'sales_estimate', '预估销量'], 0)),
+      score: num(getVal(r, ['score', 'opportunity_score', 'total_score', '得分'], 0)),
+      amazon_price: num(getVal(r, ['amazon_price', 'amz_price', 'Amazon Price', 'amazon售价'], 0)),
+      amazon_badge: getVal(r, ['amazon_badge', 'best_seller', 'amz_badge', 'Amazon标记'], ''),
+    })).filter(r => r.title || r.price > 0);
+  }
+
+  // Extract recommendations
+  STATE.recommendations = [];
+  if (recSheet && raw[recSheet]) {
+    STATE.recommendations = raw[recSheet].map((r, i) => ({
+      _raw: r,
+      rank: i + 1,
+      title: getVal(r, ['title', 'product_title', 'name', '产品名称'], ''),
+      subcategory: getVal(r, ['subcategory', 'sub_category', '子类目', 'category'], ''),
+      price: num(getVal(r, ['price', 'sale_price', '售价'], 0)),
+      margin: num(getVal(r, ['margin', 'margin_pct', '利润率'], 0)),
+      reviews: num(getVal(r, ['reviews', 'review_count', '评论数'], 0)),
+      express: getVal(r, ['express', 'is_express', 'fulfillment', '配送'], ''),
+      sales: num(getVal(r, ['sales', 'estimated_sales', '销量'], 0)),
+      score: num(getVal(r, ['score', 'opportunity_score', 'total_score', '得分'], 0)),
+    })).filter(r => r.title);
+  }
+
+  // Extract amazon cross
+  STATE.amazonCross = [];
+  if (amzSheet && raw[amzSheet]) {
+    STATE.amazonCross = raw[amzSheet].map(r => ({
+      _raw: r,
+      title: getVal(r, ['title', 'product_title', 'name', '产品名称'], ''),
+      noon_price: num(getVal(r, ['noon_price', 'price', 'sale_price', 'Noon Price', 'noon售价'], 0)),
+      amazon_price: num(getVal(r, ['amazon_price', 'amz_price', 'Amazon Price', 'amazon售价'], 0)),
+      price_diff_pct: num(getVal(r, ['price_diff_pct', 'price_diff', 'diff_pct', '价差%'], 0)),
+      margin: num(getVal(r, ['margin', 'noon_margin', 'margin_pct', '利润率'], 0)),
+      amazon_badge: getVal(r, ['amazon_badge', 'badge', 'best_seller', 'choice', 'Amazon标记', '标记'], ''),
+      subcategory: getVal(r, ['subcategory', 'sub_category', '子类目'], ''),
+    })).filter(r => r.title && (r.noon_price > 0 || r.amazon_price > 0));
+  }
+
+  // If no dedicated amazon sheet, try products that have amazon prices
+  if (!STATE.amazonCross.length && STATE.products.length) {
+    STATE.amazonCross = STATE.products.filter(p => p.amazon_price > 0).map(p => ({
+      title: p.title,
+      noon_price: p.price,
+      amazon_price: p.amazon_price,
+      price_diff_pct: p.price > 0 ? ((p.amazon_price - p.price) / p.price * 100) : 0,
+      margin: p.margin,
+      amazon_badge: p.amazon_badge,
+      subcategory: p.subcategory,
+    }));
+  }
+}
+
+// ── Filters ──
+function buildFilters() {
+  // Subcategory multi-select
+  const allCats = new Set();
+  STATE.subcats.forEach(s => { if (s.subcategory) allCats.add(s.subcategory); });
+  STATE.products.forEach(p => { if (p.subcategory) allCats.add(p.subcategory); });
+  const sorted = [...allCats].sort();
+
+  const container = document.getElementById('catFilter');
+  container.innerHTML = sorted.map(c =>
+    `<label><input type="checkbox" value="${c}" checked> ${truncate(c, 30)}</label>`
+  ).join('');
+
+  // Also populate deep-dive dropdown
+  const ddSel = document.getElementById('ddCatSelect');
+  ddSel.innerHTML = '<option value="">-- 请选择 --</option>' +
+    sorted.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  // Cat search
+  document.getElementById('catSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    container.querySelectorAll('label').forEach(lbl => {
+      lbl.style.display = lbl.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  // Set price range max based on data
+  const maxPrice = Math.max(
+    ...STATE.products.map(p => p.price).filter(p => p > 0 && p < 100000),
+    500
+  );
+  const priceMax = Math.ceil(maxPrice / 100) * 100;
+  document.getElementById('priceMax').max = priceMax;
+  document.getElementById('priceMax').value = priceMax;
+  document.getElementById('priceMaxLabel').textContent = priceMax;
+
+  // Bind range sliders
+  ['marginMin', 'marginMax', 'expressMin', 'expressMax', 'priceMin', 'priceMax'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+      document.getElementById(id + 'Label').textContent =
+        id.startsWith('price') ? this.value : this.value + '%';
+    });
+  });
+}
+
+function getSelectedCats() {
+  const checks = document.querySelectorAll('#catFilter input[type=checkbox]');
+  const selected = new Set();
+  checks.forEach(cb => { if (cb.checked) selected.add(cb.value); });
+  return selected;
+}
+
+function applyFilters() {
+  const cats = getSelectedCats();
+  const mMin = num(document.getElementById('marginMin').value);
+  const mMax = num(document.getElementById('marginMax').value);
+  const eMin = num(document.getElementById('expressMin').value);
+  const eMax = num(document.getElementById('expressMax').value);
+  const pMin = num(document.getElementById('priceMin').value);
+  const pMax = num(document.getElementById('priceMax').value);
+
+  // Determine if margin is in 0-1 (ratio) or 0-100 (percent) format
+  function marginInRange(m) {
+    const mp = Math.abs(m) > 5 ? m : m * 100; // heuristic: if < 5 treat as ratio
+    return mp >= mMin && mp <= mMax;
+  }
+
+  STATE.filtered.subcats = STATE.subcats.filter(s => {
+    if (s.subcategory && !cats.has(s.subcategory)) return false;
+    const ep = s.express_pct > 1 ? s.express_pct : s.express_pct * 100;
+    if (ep < eMin || ep > eMax) return false;
+    return true;
+  });
+
+  STATE.filtered.products = STATE.products.filter(p => {
+    if (p.subcategory && !cats.has(p.subcategory)) return false;
+    if (p.price > 0 && (p.price < pMin || p.price > pMax)) return false;
+    return true;
+  });
+
+  renderAll();
+}
+
+function resetFilters() {
+  document.querySelectorAll('#catFilter input[type=checkbox]').forEach(cb => cb.checked = true);
+  document.getElementById('marginMin').value = document.getElementById('marginMin').min;
+  document.getElementById('marginMax').value = document.getElementById('marginMax').max;
+  document.getElementById('expressMin').value = 0;
+  document.getElementById('expressMax').value = 100;
+  document.getElementById('priceMin').value = 0;
+  document.getElementById('priceMax').value = document.getElementById('priceMax').max;
+  ['marginMin', 'marginMax', 'expressMin', 'expressMax', 'priceMin', 'priceMax'].forEach(id => {
+    const el = document.getElementById(id);
+    document.getElementById(id + 'Label').textContent =
+      id.startsWith('price') ? el.value : el.value + '%';
+  });
+  applyFilters();
+}
+
+// ── Render All ──
+function renderAll() {
+  renderKPIs();
+  renderOverviewCharts();
+  renderRecommendations();
+  renderAmazon();
+}
+
+// ── KPIs ──
+function renderKPIs() {
+  const subcats = STATE.filtered.subcats;
+  const products = STATE.filtered.products;
+
+  const totalProducts = products.length || subcats.reduce((s, c) => s + c.product_count, 0);
+  const totalSubcats = subcats.length || new Set(products.map(p => p.subcategory)).size;
+
+  // Express %
+  let expressCount = products.filter(p => {
+    const e = safe(p.express).toLowerCase();
+    return e === 'true' || e === 'yes' || e === '1' || e === 'express' || e === 'noon express';
+  }).length;
+  const expressPct = totalProducts > 0 ? (expressCount / totalProducts * 100).toFixed(1) : '0.0';
+
+  // Avg margin
+  const margins = products.map(p => p.margin).filter(m => m !== 0);
+  let avgMargin = margins.length > 0 ? margins.reduce((a, b) => a + b, 0) / margins.length : 0;
+  if (Math.abs(avgMargin) < 5) avgMargin *= 100; // normalize ratio to pct
+
+  // Products with sales
+  const withSales = products.filter(p => p.sales > 0).length ||
+    subcats.reduce((s, c) => s + c.has_sales, 0);
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">产品总数</div>
+      <div class="kpi-value">${totalProducts.toLocaleString()}</div>
+      <div class="kpi-sub">Total Products</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">子类目数</div>
+      <div class="kpi-value">${totalSubcats}</div>
+      <div class="kpi-sub">Subcategories</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Express 占比</div>
+      <div class="kpi-value">${expressPct}%</div>
+      <div class="kpi-sub">Noon Express</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">平均 Margin</div>
+      <div class="kpi-value" style="color:${avgMargin >= 0 ? 'var(--green)' : 'var(--red)'}">${avgMargin.toFixed(1)}%</div>
+      <div class="kpi-sub">Avg Profit Margin</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">有销量产品</div>
+      <div class="kpi-value">${withSales.toLocaleString()}</div>
+      <div class="kpi-sub">Products with Sales</div>
+    </div>
+  `;
+}
+
+// ── Chart Utilities ──
+function destroyChart(key) {
+  if (STATE.charts[key]) { STATE.charts[key].destroy(); delete STATE.charts[key]; }
+}
+
+const PURPLE_PALETTE = [
+  'rgba(108,92,231,0.8)', 'rgba(162,155,254,0.8)', 'rgba(9,132,227,0.8)',
+  'rgba(0,206,201,0.8)', 'rgba(225,112,85,0.8)', 'rgba(253,203,110,0.8)',
+  'rgba(0,184,148,0.8)', 'rgba(214,48,49,0.8)', 'rgba(99,110,114,0.7)',
+];
+
+// ── Overview Charts ──
+function renderOverviewCharts() {
+  renderScatter();
+  renderTopCats();
+  renderPriceDist();
+}
+
+function renderScatter() {
+  destroyChart('scatter');
+  const subcats = STATE.filtered.subcats.filter(s => s.subcategory);
+  if (!subcats.length) return;
+
+  const data = subcats.map(s => {
+    let ep = s.express_pct > 1 ? s.express_pct : s.express_pct * 100;
+    let mm = Math.abs(s.median_margin) > 5 ? s.median_margin : s.median_margin * 100;
+    return {
+      x: ep,
+      y: mm,
+      r: Math.max(4, Math.min(25, Math.sqrt(s.product_count) * 2)),
+      label: s.subcategory,
+      count: s.product_count,
+    };
+  });
+
+  const ctx = document.getElementById('chartScatter').getContext('2d');
+  STATE.charts.scatter = new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: '子类目',
+        data: data,
+        backgroundColor: data.map(d => {
+          // Color by quadrant: upper-left = blue ocean (green), lower-right = red ocean (red)
+          if (d.x < 50 && d.y > 0) return 'rgba(0,184,148,0.6)';
+          if (d.x > 50 && d.y < 0) return 'rgba(214,48,49,0.6)';
+          if (d.x < 50 && d.y < 0) return 'rgba(253,203,110,0.6)';
+          return 'rgba(108,92,231,0.6)';
+        }),
+        borderColor: 'rgba(108,92,231,0.3)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 1.5,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return `${d.label}: Express ${d.x.toFixed(1)}%, Margin ${d.y.toFixed(1)}%, 产品数 ${d.count}`;
+            }
+          }
+        },
+      },
+      scales: {
+        x: { title: { display: true, text: 'Express % (竞争度)', font: { size: 12 } }, min: 0, max: 100 },
+        y: { title: { display: true, text: 'Median Margin % (利润空间)', font: { size: 12 } } },
+      },
+      // Quadrant annotation via plugin
+    },
+    plugins: [{
+      id: 'quadrant',
+      beforeDraw(chart) {
+        const { ctx, chartArea: { left, right, top, bottom }, scales: { x, y } } = chart;
+        const midX = x.getPixelForValue(50);
+        const midY = y.getPixelForValue(0);
+        // Blue ocean quadrant (upper-left)
+        if (midX > left && midY < bottom) {
+          ctx.save();
+          ctx.fillStyle = 'rgba(0,184,148,0.04)';
+          ctx.fillRect(left, top, midX - left, Math.min(midY, bottom) - top);
+          ctx.fillStyle = 'rgba(0,184,148,0.5)';
+          ctx.font = '11px sans-serif';
+          ctx.fillText('蓝海区域', left + 8, top + 18);
+          ctx.restore();
+        }
+      }
+    }]
+  });
+}
+
+function renderTopCats() {
+  destroyChart('topCats');
+  let subcats = [...STATE.filtered.subcats];
+  // Sort by opportunity_score or product_count
+  const hasScores = subcats.some(s => s.opportunity_score > 0);
+  if (hasScores) {
+    subcats.sort((a, b) => b.opportunity_score - a.opportunity_score);
+  } else {
+    subcats.sort((a, b) => b.product_count - a.product_count);
+  }
+  subcats = subcats.slice(0, 20);
+  if (!subcats.length) return;
+
+  const ctx = document.getElementById('chartTopCats').getContext('2d');
+  STATE.charts.topCats = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: subcats.map(s => truncate(s.subcategory, 20)),
+      datasets: [{
+        label: hasScores ? 'Opportunity Score' : 'Product Count',
+        data: subcats.map(s => hasScores ? s.opportunity_score : s.product_count),
+        backgroundColor: subcats.map((_, i) => {
+          const t = i / 20;
+          return `rgba(108, ${Math.floor(92 + t * 60)}, ${Math.floor(231 - t * 60)}, 0.8)`;
+        }),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 1.5,
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { title: { display: true, text: hasScores ? 'Opportunity Score' : 'Product Count', font: { size: 12 } } },
+        y: { ticks: { font: { size: 10 } } },
+      }
+    }
+  });
+}
+
+function renderPriceDist() {
+  destroyChart('priceDist');
+  const prices = STATE.filtered.products.map(p => p.price).filter(p => p > 0 && p < 10000);
+  if (!prices.length) {
+    // Try from subcats avg_price
+    const ps = STATE.filtered.subcats.map(s => s.avg_price).filter(p => p > 0);
+    if (!ps.length) return;
+    prices.push(...ps);
+  }
+
+  // Create bins
+  const max = Math.min(Math.max(...prices), 2000);
+  const binSize = max <= 100 ? 10 : max <= 500 ? 25 : max <= 1000 ? 50 : 100;
+  const bins = {};
+  for (let i = 0; i <= max; i += binSize) bins[i] = 0;
+  prices.forEach(p => {
+    const b = Math.floor(Math.min(p, max) / binSize) * binSize;
+    bins[b] = (bins[b] || 0) + 1;
+  });
+
+  const labels = Object.keys(bins).map(k => `${k}-${+k + binSize}`);
+  const values = Object.values(bins);
+
+  const ctx = document.getElementById('chartPriceDist').getContext('2d');
+  STATE.charts.priceDist = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '产品数',
+        data: values,
+        backgroundColor: 'rgba(108,92,231,0.6)',
+        borderColor: 'rgba(108,92,231,1)',
+        borderWidth: 1,
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 3,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { title: { display: true, text: '价格区间 (AED)', font: { size: 12 } }, ticks: { maxRotation: 45, font: { size: 10 } } },
+        y: { title: { display: true, text: '产品数', font: { size: 12 } } },
+      }
+    }
+  });
+}
+
+// ── Tab 2: Deep Dive ──
+document.getElementById('ddCatSelect').addEventListener('change', function() {
+  const cat = this.value;
+  if (!cat) {
+    document.getElementById('ddContent').style.display = 'none';
+    document.getElementById('ddEmpty').style.display = 'block';
+    return;
+  }
+  document.getElementById('ddContent').style.display = 'block';
+  document.getElementById('ddEmpty').style.display = 'none';
+  renderDeepDive(cat);
+});
+
+function renderDeepDive(cat) {
+  const catProducts = STATE.products.filter(p => p.subcategory === cat);
+  const catSubcat = STATE.subcats.find(s => s.subcategory === cat) || {};
+
+  // Comparison stats
+  const express = catProducts.filter(p => isExpress(p));
+  const nonExpress = catProducts.filter(p => !isExpress(p));
+  const avgPriceE = express.length ? (express.reduce((s, p) => s + p.price, 0) / express.length) : 0;
+  const avgPriceN = nonExpress.length ? (nonExpress.reduce((s, p) => s + p.price, 0) / nonExpress.length) : 0;
+  const avgReviewE = express.length ? (express.reduce((s, p) => s + p.reviews, 0) / express.length) : 0;
+  const avgReviewN = nonExpress.length ? (nonExpress.reduce((s, p) => s + p.reviews, 0) / nonExpress.length) : 0;
+
+  document.getElementById('ddComparison').innerHTML = `
+    <div class="comp-card">
+      <h4>Express 产品</h4>
+      <div class="comp-val" style="color:var(--blue)">${express.length}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">均价 ${avgPriceE.toFixed(2)} AED | 均评 ${avgReviewE.toFixed(0)}</div>
+    </div>
+    <div class="comp-card">
+      <h4>Non-Express 产品</h4>
+      <div class="comp-val" style="color:var(--orange)">${nonExpress.length}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">均价 ${avgPriceN.toFixed(2)} AED | 均评 ${avgReviewN.toFixed(0)}</div>
+    </div>
+  `;
+
+  // Category price distribution
+  destroyChart('catPrice');
+  const prices = catProducts.map(p => p.price).filter(p => p > 0);
+  if (prices.length) {
+    const max = Math.max(...prices);
+    const binSize = max <= 50 ? 5 : max <= 200 ? 10 : max <= 500 ? 25 : 50;
+    const bins = {};
+    prices.forEach(p => {
+      const b = Math.floor(p / binSize) * binSize;
+      bins[b] = (bins[b] || 0) + 1;
+    });
+    const ctx = document.getElementById('chartCatPrice').getContext('2d');
+    STATE.charts.catPrice = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(bins).map(k => `${k}-${+k + binSize}`),
+        datasets: [{
+          label: '产品数',
+          data: Object.values(bins),
+          backgroundColor: 'rgba(108,92,231,0.6)',
+          borderRadius: 3,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: '价格 (AED)' } },
+          y: { title: { display: true, text: '数量' } },
+        }
+      }
+    });
+  }
+
+  // Radar chart
+  destroyChart('radar');
+  const epct = catSubcat.express_pct > 1 ? catSubcat.express_pct : (catSubcat.express_pct || 0) * 100;
+  const radarData = [
+    Math.min(100, epct),
+    Math.min(100, catSubcat.review_density || (avgReviewE + avgReviewN) / 2 / 10),
+    Math.min(100, (catSubcat.ad_density || 0) > 1 ? catSubcat.ad_density : (catSubcat.ad_density || 0) * 100),
+    // Price war intensity: coefficient of variation of prices
+    prices.length > 1 ? Math.min(100, (std(prices) / mean(prices)) * 200) : 30,
+    // Brand concentration: approximation from top product share
+    Math.min(100, catProducts.length > 0 ? (1 / catProducts.length) * 500 : 50),
+  ];
+
+  const ctxR = document.getElementById('chartRadar').getContext('2d');
+  STATE.charts.radar = new Chart(ctxR, {
+    type: 'radar',
+    data: {
+      labels: ['Express%', '评论密度', '广告密度', '价格战强度', '品牌集中度'],
+      datasets: [{
+        label: cat,
+        data: radarData,
+        backgroundColor: 'rgba(108,92,231,0.15)',
+        borderColor: 'rgba(108,92,231,0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(108,92,231,1)',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: { beginAtZero: true, max: 100, ticks: { font: { size: 10 }, stepSize: 25 } }
+      }
+    }
+  });
+
+  // Top 10 product cards
+  const top10 = [...catProducts].sort((a, b) => (b.score || b.reviews) - (a.score || a.reviews)).slice(0, 10);
+  document.getElementById('ddProducts').innerHTML = top10.map(p => {
+    const marginNorm = Math.abs(p.margin) > 5 ? p.margin : p.margin * 100;
+    return `
+    <div class="product-card">
+      <div class="pc-title">${safe(p.title) || 'N/A'}</div>
+      <div class="pc-meta">
+        <span class="pc-price">${p.price.toFixed(2)} AED</span>
+        <span>⭐ ${p.rating || '-'}</span>
+        <span>💬 ${p.reviews}</span>
+      </div>
+      <div class="pc-badges">
+        ${isExpress(p) ? '<span class="badge badge-express">Express</span>' : ''}
+        ${p.sales > 0 ? '<span class="badge badge-hot">有销量</span>' : ''}
+      </div>
+      <div class="pc-margin">Margin: <span class="${marginNorm >= 0 ? 'margin-pos' : 'margin-neg'}">${marginNorm.toFixed(1)}%</span></div>
+    </div>`;
+  }).join('') || '<p style="color:var(--text2)">该类目暂无产品数据</p>';
+}
+
+function isExpress(p) {
+  const e = safe(p.express).toLowerCase();
+  return e === 'true' || e === 'yes' || e === '1' || e === 'express' || e === 'noon express';
+}
+
+function mean(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
+function std(arr) {
+  const m = mean(arr);
+  return Math.sqrt(arr.reduce((s, v) => s + (v - m) ** 2, 0) / arr.length);
+}
+
+// ── Tab 3: Recommendations ──
+function renderRecommendations() {
+  const recs = STATE.recommendations.length ? STATE.recommendations : STATE.filtered.products.slice(0, 200);
+  if (!recs.length) {
+    document.getElementById('recEmpty').style.display = 'block';
+    document.getElementById('recTable').closest('.chart-box').style.display = 'none';
+    return;
+  }
+  document.getElementById('recEmpty').style.display = 'none';
+  document.getElementById('recTable').closest('.chart-box').style.display = 'block';
+
+  renderRecTable(recs);
+}
+
+let currentRecs = [];
+
+function renderRecTable(recs) {
+  currentRecs = recs;
+  const body = document.getElementById('recBody');
+  body.innerHTML = recs.map((r, i) => {
+    const marginNorm = Math.abs(r.margin) > 5 ? r.margin : r.margin * 100;
+    return `
+    <tr data-idx="${i}" onclick="toggleRecExpand(this, ${i})" style="cursor:pointer">
+      <td>${r.rank || (i + 1)}</td>
+      <td>${truncate(r.subcategory, 25)}</td>
+      <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis">${truncate(r.title, 50)}</td>
+      <td>${r.price.toFixed(2)}</td>
+      <td><span class="${marginNorm >= 0 ? 'margin-pos' : 'margin-neg'}">${marginNorm.toFixed(1)}%</span></td>
+      <td>${r.reviews}</td>
+      <td>${isExpressRec(r) ? '<span class="badge badge-express">Express</span>' : '-'}</td>
+      <td>${r.score ? r.score.toFixed(1) : '-'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function isExpressRec(r) {
+  const e = safe(r.express).toLowerCase();
+  return e === 'true' || e === 'yes' || e === '1' || e === 'express' || e === 'noon express';
+}
+
+function toggleRecExpand(tr, idx) {
+  const next = tr.nextElementSibling;
+  if (next && next.classList.contains('expanded-row')) {
+    next.remove();
+    return;
+  }
+  // Remove any existing expanded rows
+  document.querySelectorAll('#recBody .expanded-row').forEach(r => r.remove());
+
+  const r = currentRecs[idx];
+  if (!r || !r._raw) return;
+  const raw = r._raw;
+  const details = Object.entries(raw).map(([k, v]) =>
+    `<span style="margin-right:12px"><strong>${k}:</strong> ${v}</span>`
+  ).join('');
+
+  const expandedRow = document.createElement('tr');
+  expandedRow.className = 'expanded-row';
+  expandedRow.innerHTML = `<td colspan="8" style="padding:12px;font-size:12px;line-height:1.8;white-space:normal">${details}</td>`;
+  tr.after(expandedRow);
+}
+
+// Sort
+document.querySelectorAll('#recTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (!col) return;
+    if (STATE.sortCol === col) STATE.sortAsc = !STATE.sortAsc;
+    else { STATE.sortCol = col; STATE.sortAsc = true; }
+
+    // Update arrows
+    document.querySelectorAll('#recTable thead th .sort-arrow').forEach(s => s.textContent = '');
+    th.querySelector('.sort-arrow').textContent = STATE.sortAsc ? '▲' : '▼';
+
+    const recs = [...currentRecs];
+    recs.sort((a, b) => {
+      let va, vb;
+      switch (col) {
+        case 'rank': va = a.rank; vb = b.rank; break;
+        case 'subcategory': va = a.subcategory; vb = b.subcategory; return STATE.sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+        case 'title': va = a.title; vb = b.title; return STATE.sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+        case 'price': va = a.price; vb = b.price; break;
+        case 'margin': va = a.margin; vb = b.margin; break;
+        case 'reviews': va = a.reviews; vb = b.reviews; break;
+        case 'express': va = isExpressRec(a) ? 1 : 0; vb = isExpressRec(b) ? 1 : 0; break;
+        case 'score': va = a.score; vb = b.score; break;
+        default: va = 0; vb = 0;
+      }
+      return STATE.sortAsc ? va - vb : vb - va;
+    });
+    renderRecTable(recs);
+  });
+});
+
+// Search
+document.getElementById('recSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  const base = STATE.recommendations.length ? STATE.recommendations : STATE.filtered.products.slice(0, 200);
+  if (!q) { renderRecTable(base); return; }
+  const filtered = base.filter(r =>
+    (r.title && r.title.toLowerCase().includes(q)) ||
+    (r.subcategory && r.subcategory.toLowerCase().includes(q))
+  );
+  renderRecTable(filtered);
+});
+
+// ── Tab 4: Amazon Compare ──
+function renderAmazon() {
+  const data = STATE.amazonCross;
+  if (!data.length) {
+    document.getElementById('amzEmpty').style.display = 'block';
+    document.querySelectorAll('#tab-compare .chart-box').forEach(el => el.style.display = 'none');
+    return;
+  }
+  document.getElementById('amzEmpty').style.display = 'none';
+  document.querySelectorAll('#tab-compare .chart-box').forEach(el => el.style.display = 'block');
+
+  // Price comparison bar chart (top 20)
+  destroyChart('priceCompare');
+  const top20 = data.filter(d => d.noon_price > 0 && d.amazon_price > 0).slice(0, 20);
+  if (top20.length) {
+    const ctx = document.getElementById('chartPriceCompare').getContext('2d');
+    STATE.charts.priceCompare = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: top20.map(d => truncate(d.title, 18)),
+        datasets: [
+          { label: 'Noon Price', data: top20.map(d => d.noon_price), backgroundColor: 'rgba(108,92,231,0.7)', borderRadius: 3 },
+          { label: 'Amazon Price', data: top20.map(d => d.amazon_price), backgroundColor: 'rgba(225,112,85,0.7)', borderRadius: 3 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true, aspectRatio: 2,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          x: { ticks: { maxRotation: 45, font: { size: 9 } } },
+          y: { title: { display: true, text: 'Price (AED)' } },
+        }
+      }
+    });
+  }
+
+  // Diff scatter
+  destroyChart('diffScatter');
+  const scatterData = data.filter(d => d.noon_price > 0).map(d => ({
+    x: d.price_diff_pct || (d.noon_price > 0 ? ((d.amazon_price - d.noon_price) / d.noon_price * 100) : 0),
+    y: Math.abs(d.margin) > 5 ? d.margin : d.margin * 100,
+    label: d.title,
+  }));
+  if (scatterData.length) {
+    const ctx = document.getElementById('chartDiffScatter').getContext('2d');
+    STATE.charts.diffScatter = new Chart(ctx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: '产品',
+          data: scatterData,
+          backgroundColor: scatterData.map(d =>
+            d.x > 0 ? 'rgba(0,184,148,0.6)' : 'rgba(214,48,49,0.6)'
+          ),
+          pointRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${truncate(ctx.raw.label, 30)}: 价差 ${ctx.raw.x.toFixed(1)}%, Margin ${ctx.raw.y.toFixed(1)}%`
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: '价差% (Amazon vs Noon)', font: { size: 12 } } },
+          y: { title: { display: true, text: 'Noon Margin%', font: { size: 12 } } },
+        }
+      }
+    });
+  }
+
+  // Badge table
+  const badgeProducts = data.filter(d => {
+    const b = safe(d.amazon_badge).toLowerCase();
+    return b && b !== 'none' && b !== 'n/a' && b !== '0' && b !== 'false';
+  });
+  const tableData = badgeProducts.length ? badgeProducts : data.slice(0, 30);
+
+  document.getElementById('amzBody').innerHTML = tableData.map(d => {
+    const diffPct = d.price_diff_pct || (d.noon_price > 0 ? ((d.amazon_price - d.noon_price) / d.noon_price * 100) : 0);
+    const marginNorm = Math.abs(d.margin) > 5 ? d.margin : d.margin * 100;
+    const badge = safe(d.amazon_badge);
+    return `
+    <tr>
+      <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis">${truncate(d.title, 45)}</td>
+      <td>${d.noon_price.toFixed(2)}</td>
+      <td>${d.amazon_price.toFixed(2)}</td>
+      <td><span style="color:${diffPct >= 0 ? 'var(--green)' : 'var(--red)'}">${diffPct.toFixed(1)}%</span></td>
+      <td><span class="${marginNorm >= 0 ? 'margin-pos' : 'margin-neg'}">${marginNorm.toFixed(1)}%</span></td>
+      <td>${badge ? `<span class="badge badge-amazon">${badge}</span>` : '-'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Tab Switching ──
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+
+    // Resize charts when tab becomes visible
+    setTimeout(() => {
+      Object.values(STATE.charts).forEach(c => { try { c.resize(); } catch(e) {} });
+    }, 100);
+  });
+});
+</script>
+</body>
+</html>

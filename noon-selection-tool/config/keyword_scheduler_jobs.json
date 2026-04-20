@@ -1,0 +1,11 @@
+{
+  "jobs": [
+    {
+      "name": "pet_sports_batch",
+      "enabled": true,
+      "monitor_config": "D:\\claude noon v1\\noon-selection-tool\\config\\keyword_monitor_pet_sports_batch.json",
+      "noon_count": 30,
+      "amazon_count": 30
+    }
+  ]
+}

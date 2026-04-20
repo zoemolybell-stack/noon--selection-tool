@@ -1,0 +1,17 @@
+[Unit]
+Description=Huihaokang daily crawl report
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/volume1/docker/huihaokang-erp/current
+UMask=0022
+Environment=PYTHONUNBUFFERED=1
+Environment=NOON_REPORT_BASE_URL=http://127.0.0.1:8865
+Environment=NOON_REPORT_ROOT=/app/runtime_data/crawl_reports
+Environment=NOON_REPORT_REQUEST_RETRIES=5
+Environment=NOON_REPORT_REQUEST_TIMEOUT_SECONDS=12
+Environment=NOON_REPORT_REQUEST_BACKOFF_SECONDS=2
+ExecStart=/bin/bash -lc 'mkdir -p /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/daily && chmod 755 /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/daily && /usr/bin/docker exec -e NOON_REPORT_BASE_URL=http://127.0.0.1:8865 -e NOON_REPORT_ROOT=/app/runtime_data/crawl_reports -e NOON_REPORT_REQUEST_RETRIES=5 -e NOON_REPORT_REQUEST_TIMEOUT_SECONDS=12 -e NOON_REPORT_REQUEST_BACKOFF_SECONDS=2 huihaokang-web python /app/tools/write_crawl_report.py >> /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state/report_service.log 2>&1'
+TimeoutStartSec=15min

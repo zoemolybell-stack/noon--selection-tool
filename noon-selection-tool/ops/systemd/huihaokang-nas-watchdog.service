@@ -1,0 +1,17 @@
+[Unit]
+Description=Huihaokang NAS watchdog agent
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/volume1/docker/huihaokang-erp/current
+UMask=0022
+Environment=PYTHONUNBUFFERED=1
+Environment=NOON_WATCHDOG_BASE_URL=http://127.0.0.1:8865
+Environment=NOON_REPORT_ROOT=/app/runtime_data/crawl_reports
+Environment=NOON_WATCHDOG_STALE_WORKER_SECONDS=1200
+Environment=NOON_WATCHDOG_STALE_TASK_SECONDS=1200
+Environment=NOON_WATCHDOG_REPORT_MAX_AGE_HOURS=26
+ExecStart=/bin/bash -lc 'mkdir -p /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/daily && chmod 755 /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/daily && REPORT_SERVICE_STATE=$(/usr/bin/systemctl is-active huihaokang-crawl-report.service 2>/dev/null || true) && REPORT_SERVICE_SUBSTATE=$(/usr/bin/systemctl show huihaokang-crawl-report.service -p SubState --value 2>/dev/null || true) && REPORT_TIMER_STATE=$(/usr/bin/systemctl is-active huihaokang-crawl-report.timer 2>/dev/null || true) && REPORT_TIMER_SUBSTATE=$(/usr/bin/systemctl show huihaokang-crawl-report.timer -p SubState --value 2>/dev/null || true) && /usr/bin/docker exec -e NOON_WATCHDOG_BASE_URL=http://127.0.0.1:8865 -e NOON_REPORT_ROOT=/app/runtime_data/crawl_reports -e NOON_WATCHDOG_STALE_WORKER_SECONDS=1200 -e NOON_WATCHDOG_STALE_TASK_SECONDS=1200 -e NOON_WATCHDOG_REPORT_MAX_AGE_HOURS=26 -e NOON_WATCHDOG_REPORT_SERVICE_STATE="$REPORT_SERVICE_STATE" -e NOON_WATCHDOG_REPORT_SERVICE_SUBSTATE="$REPORT_SERVICE_SUBSTATE" -e NOON_WATCHDOG_REPORT_TIMER_STATE="$REPORT_TIMER_STATE" -e NOON_WATCHDOG_REPORT_TIMER_SUBSTATE="$REPORT_TIMER_SUBSTATE" huihaokang-web python /app/tools/run_nas_watchdog_agent.py >> /volume1/docker/huihaokang-erp/shared/runtime_data/crawl_reports/state/watchdog_service.log 2>&1'
+TimeoutStartSec=15min

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noon 项目介绍与架构总览</title>
+  <style>
+    :root {
+      --bg: #f6f1e7;
+      --panel: #fffdf8;
+      --ink: #2d271f;
+      --muted: #6f675c;
+      --line: #ddd1bf;
+      --accent: #a96f1a;
+      --accent-soft: #f1dfbf;
+      --deep: #302820;
+      --good: #3c7f52;
+      --warn: #b07b19;
+      --bad: #a44848;
+      --shadow: 0 14px 40px rgba(48, 40, 32, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(169, 111, 26, 0.12), transparent 24%),
+        linear-gradient(180deg, #f9f5ed 0%, var(--bg) 100%);
+      line-height: 1.7;
+    }
+
+    .page {
+      width: min(1480px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 32px 0 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(48, 40, 32, 0.98), rgba(53, 43, 31, 0.94));
+      color: #f8f3eb;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 34px 34px 28px;
+      margin-bottom: 26px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 980px;
+      color: rgba(248, 243, 235, 0.82);
+      font-size: 15px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+      color: #efe4d1;
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 26px 26px 24px;
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      line-height: 1.25;
+    }
+
+    .section h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-top: 0;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      background: #fffaf2;
+      border: 1px solid #e3d6c3;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .score-card {
+      background: linear-gradient(180deg, #fffdf9 0%, #fbf4e7 100%);
+    }
+
+    .score {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 10px;
+    }
+
+    .score strong {
+      font-size: 30px;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    .mini {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .good { background: rgba(60, 127, 82, 0.12); color: var(--good); }
+    .warn { background: rgba(176, 123, 25, 0.12); color: var(--warn); }
+    .bad  { background: rgba(164, 72, 72, 0.12); color: var(--bad); }
+
+    .kpi {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      color: var(--deep);
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .flow {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .flow-step {
+      flex: 1 1 200px;
+      min-height: 88px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #fff8ed;
+      border: 1px solid #e4d6c0;
+    }
+
+    .arrow {
+      font-size: 24px;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #eadfce;
+      padding: 12px 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: #fff9f0;
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    .quote {
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      background: #fff7e8;
+      border-radius: 14px;
+      color: #4b4031;
+    }
+
+    .compare {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .compare .card h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1200px) {
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      .page { width: min(100vw - 24px, 1480px); padding-top: 18px; }
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .compare { grid-template-columns: 1fr; }
+      .hero { padding: 24px 20px; }
+      .section { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Noon 项目介绍与架构总览</h1>
+      <p>
+        这份说明不是给程序员看的，而是给“项目负责人”看的。
+        目标是让你不需要读代码，也能明白目前这个项目已经做到了什么、核心结构是什么、为什么一开始这样设计、现在哪些地方已经成熟、哪些地方还在补强，以及未来最合理的终局应该长成什么样。
+      </p>
+      <div class="meta">
+        <span class="pill">评估日期：2026-04-13</span>
+        <span class="pill">评估范围：本地仓库实际代码 + 当前文档</span>
+        <span class="pill">主系统：<code>noon-selection-tool</code></span>
+        <span class="pill">当前阶段：NAS Runtime Hardening / Quality Improvement</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>一眼看懂：这个项目到底是什么</h2>
+      <p class="lead">
+        如果用最简单的话来讲，这个项目就是一套“把 Noon 平台公开商品情报变成经营决策系统”的工具链。
+      </p>
+      <div class="flow">
+        <div class="flow-step">
+          <h3>1. 爬虫采集</h3>
+          <div>类目爬虫、关键词爬虫，从前台公开信息持续采集商品、价格、评论、销量信号、配送标签等。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>2. 阶段库沉淀</h3>
+          <div>先分别写入类目 stage 和关键词 stage，保留原始观测历史。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>3. 统一仓库</h3>
+          <div>把两边数据整理成一个统一的 warehouse，供 Web 和后续经营逻辑使用。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>4. Web 工作台</h3>
+          <div>在 ERP 风格的 Web 里做筛选、比对、详情、运行监控和运营判断。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>5. 后续 ERP / 补货</h3>
+          <div>未来再把商品库、销售、库存、采购、补货计划接进真正的经营中台。</div>
+        </div>
+      </div>
+      <p class="footer-note">
+        你可以把它理解成：目前已经不是“一个爬虫脚本”，而是一套“数据采集 + 数据仓库 + 运营工作台”的雏形。
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>当前实际数据规模</h2>
+      <div class="grid-4">
+        <div class="card">
+          <div class="kpi">202,660</div>
+          <div class="kpi-label">类目 stage 产品数</div>
+          <div class="subtle">SQLite · <code>data/product_store.db</code></div>
+        </div>
+        <div class="card">
+          <div class="kpi">68,687</div>
+          <div class="kpi-label">关键词 stage 产品数</div>
+          <div class="subtle">SQLite · <code>runtime_data/keyword/product_store.db</code></div>
+        </div>
+        <div class="card">
+          <div class="kpi">255,194</div>
+          <div class="kpi-label">统一 warehouse 产品数</div>
+          <div class="subtle">SQLite 本地仓库 · <code>data/analytics/warehouse.db</code></div>
+        </div>
+        <div class="card">
+          <div class="kpi">568,402</div>
+          <div class="kpi-label">warehouse 观测事件数</div>
+          <div class="subtle">最近观测时间：2026-04-13 00:36</div>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-top:16px;">
+        <div class="card">
+          <div class="kpi">808.82 MB</div>
+          <div class="kpi-label">类目 stage 数据库体积</div>
+        </div>
+        <div class="card">
+          <div class="kpi">532.88 MB</div>
+          <div class="kpi-label">关键词 stage 数据库体积</div>
+        </div>
+        <div class="card">
+          <div class="kpi">1668.57 MB</div>
+          <div class="kpi-label">本地 warehouse 体积</div>
+        </div>
+        <div class="card">
+          <div class="kpi">0.26 MB</div>
+          <div class="kpi-label">ops 控制库体积</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>模块评分总览</h2>
+      <p class="lead">
+        分数不是“代码优雅程度”，而是“作为业务系统的可落地程度”。满分 10 分。
+      </p>
+      <div class="grid-3">
+        <div class="card score-card">
+          <div class="status good">已可长期使用</div>
+          <div class="score"><strong>8.5</strong><span>/10</span></div>
+          <h3>类目爬虫链路</h3>
+          <div>能力强、覆盖深、断点续跑和运行硬化做得较多，是当前最成熟的采集链路之一。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status warn">可用但仍在治理</div>
+          <div class="score"><strong>7.6</strong><span>/10</span></div>
+          <h3>关键词爬虫链路</h3>
+          <div>已经能长期运行，但“质量分层、truth 归属、监控口径”还在持续补强。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status good">架构方向正确</div>
+          <div class="score"><strong>8.2</strong><span>/10</span></div>
+          <h3>统一仓库 warehouse</h3>
+          <div>这是整个项目最关键的“真相层”，方向已经很对，后续只需继续稳固。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status warn">可运营但还不够顺</div>
+          <div class="score"><strong>7.2</strong><span>/10</span></div>
+          <h3>Web 工作台</h3>
+          <div>已经不是 demo，但离真正成熟 ERP 还有一段，主要问题在信息组织、前端规模和长期可维护性。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status good">思路先进</div>
+          <div class="score"><strong>8.0</strong><span>/10</span></div>
+          <h3>任务调度与运行控制</h3>
+          <div>已经有 scheduler / worker / task center / sync contract，说明系统已进入平台化阶段。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status good">适合当前阶段</div>
+          <div class="score"><strong>7.8</strong><span>/10</span></div>
+          <h3>数据库设计</h3>
+          <div>“本地 SQLite + NAS Postgres”的过渡策略非常符合项目发展节奏，不是低级方案，而是阶段性合理方案。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status good">明显成熟</div>
+          <div class="score"><strong>8.3</strong><span>/10</span></div>
+          <h3>部署与环境隔离</h3>
+          <div>本地 beta 与 NAS stable 已经分离，发布也不是随手覆盖，说明项目已脱离“脚本时代”。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status good">超出一般项目</div>
+          <div class="score"><strong>8.6</strong><span>/10</span></div>
+          <h3>文档与协作治理</h3>
+          <div>白皮书、handoff、协作日志已经成体系，这对多窗口 Codex 协作很关键。</div>
+        </div>
+        <div class="card score-card">
+          <div class="status warn">价值高但割裂</div>
+          <div class="score"><strong>6.6</strong><span>/10</span></div>
+          <h3>根目录独立工具群</h3>
+          <div>定价、分析、周报、NIS 工具都很实用，但现在更多是“卫星工具”，还没彻底融成一个平台。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>现在的主结构是什么样</h2>
+      <div class="quote">
+        目前真正的主系统，核心都在 <code>noon-selection-tool/</code> 里。<br />
+        根目录那些定价表、分析器、NIS 生成器是有价值的，但更像“外挂工具包”，不是主运行平台。
+      </div>
+      <table style="margin-top:16px;">
+        <thead>
+          <tr>
+            <th>模块</th>
+            <th>当前结构</th>
+            <th>优点</th>
+            <th>问题</th>
+            <th>目标结构</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>类目爬虫</td>
+            <td><code>main.py</code> + <code>scrapers/noon_category_crawler.py</code> + stage DB</td>
+            <td>稳定、深度扫描强、支持断点和批量扫描</td>
+            <td>主文件仍然偏大，链路复杂</td>
+            <td>继续拆 signal / payload / parsing / orchestration</td>
+          </tr>
+          <tr>
+            <td>关键词爬虫</td>
+            <td><code>keyword_main.py</code> + runtime stage helpers + batch summary</td>
+            <td>可长期运行，已经具备质量治理和运行监控思路</td>
+            <td>主入口仍很大，质量语义还在继续收敛</td>
+            <td>进一步拆 stage helpers，稳定 truth model</td>
+          </tr>
+          <tr>
+            <td>数据存储</td>
+            <td>category stage、keyword stage、warehouse、ops 四块分库</td>
+            <td>边界清楚，不同职责不混</td>
+            <td>本地仍是多份 SQLite，理解成本高</td>
+            <td>稳定环境统一到 Postgres，本地保留轻量模式</td>
+          </tr>
+          <tr>
+            <td>任务中心</td>
+            <td><code>ops/task_store.py</code> + <code>run_task_scheduler.py</code> + worker</td>
+            <td>已有调度、重试、状态、进度、健康检查</td>
+            <td>还有历史兼容包袱，规则较多</td>
+            <td>逐步演进为真正的 crawler control center</td>
+          </tr>
+          <tr>
+            <td>Web 层</td>
+            <td>FastAPI + 静态 HTML/CSS/JS</td>
+            <td>开发快、上线轻、易控</td>
+            <td>前端文件偏大，长期维护风险上升</td>
+            <td>继续模块化，但不必急着整体改成 React</td>
+          </tr>
+          <tr>
+            <td>部署层</td>
+            <td>本地 beta + NAS stable + Cloudflare Access</td>
+            <td>环境隔离清楚，适合真实运营</td>
+            <td>双环境心智负担增加</td>
+            <td>保持双环境，强化自动 smoke / release gate</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>数据库：现在是什么结构，为什么先这样做</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>你现在实际在用哪些数据库</h3>
+          <ul>
+            <li><code>data/product_store.db</code>：类目爬虫 stage 库</li>
+            <li><code>runtime_data/keyword/product_store.db</code>：关键词爬虫 stage 库</li>
+            <li><code>data/analytics/warehouse.db</code>：统一仓库，Web 主要读取这里</li>
+            <li><code>data/ops/ops.db</code>：任务、worker、计划、控制状态</li>
+          </ul>
+          <p class="subtle">
+            换句话说，现在不是“一库打天下”，而是按职责拆开的。
+          </p>
+        </div>
+        <div class="card">
+          <h3>本地和 NAS 不完全一样</h3>
+          <ul>
+            <li>本地开发：以 SQLite 为主</li>
+            <li>NAS stable：文档里已经明确切到 retained-data Postgres 作为稳定环境主目标</li>
+            <li>这不是混乱，而是“开发模式”和“稳定环境模式”不同</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="compare" style="margin-top:18px;">
+        <div class="card">
+          <h4>为什么一开始用 SQLite 是对的</h4>
+          <ul>
+            <li>零运维，复制一个文件就能跑</li>
+            <li>本地单机开发很快，适合边做边改</li>
+            <li>早期 schema 经常变，用 SQLite 改起来成本低</li>
+            <li>爬虫和本地 beta 一开始就是单机优先，不需要先背 Postgres 运维成本</li>
+            <li>文件级备份、临时测试、分支实验都非常方便</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>为什么后来又需要 Postgres</h4>
+          <ul>
+            <li>NAS stable 已经不是“你自己电脑上的脚本”了，而是多服务长期运行</li>
+            <li>多 worker、多进程、多容器下，Postgres 并发和一致性更稳</li>
+            <li>适合做正式发布、持久化和团队长期运营</li>
+            <li>更适合后续 ERP、审批、补货、采购这些真正业务系统的扩展</li>
+          </ul>
+        </div>
+      </div>
+
+      <table style="margin-top:18px;">
+        <thead>
+          <tr>
+            <th>方案</th>
+            <th>适合什么阶段</th>
+            <th>优点</th>
+            <th>缺点</th>
+            <th>是否适合你当前项目</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>纯 SQLite</td>
+            <td>单机开发、试错期</td>
+            <td>简单、快、便宜、无运维</td>
+            <td>多服务并发和正式环境扩展性有限</td>
+            <td>适合本地 beta</td>
+          </tr>
+          <tr>
+            <td>纯 Postgres</td>
+            <td>稳定环境、多人协作、长期运营</td>
+            <td>并发稳、正式、易扩展</td>
+            <td>开发门槛和运维成本更高</td>
+            <td>适合 NAS stable 和未来 ERP</td>
+          </tr>
+          <tr>
+            <td>SQLite + Postgres 双模式</td>
+            <td>从工具走向平台的过渡期</td>
+            <td>两边兼顾，节奏合理</td>
+            <td>理解和维护成本更高</td>
+            <td><strong>这正是你们现在的现实最优解</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>目前 Web 是什么架构，为什么这样做</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>当前 Web 架构</h3>
+          <ul>
+            <li>后端：FastAPI</li>
+            <li>前端：静态 <code>index.html</code> + 多个 JS 模块 + CSS</li>
+            <li>主要文件：
+              <ul>
+                <li><code>web_beta/app.py</code></li>
+                <li><code>web_beta/static/app.js</code></li>
+                <li><code>app.home.js</code>、<code>app.keyword.js</code>、<code>app.drawer.js</code> 等</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>为什么一开始不用 React / Vue</h3>
+          <ul>
+            <li>因为项目起点是“快速验证业务链路”，不是先搭一个标准前端工程</li>
+            <li>静态 HTML/JS 对爬虫项目非常适合：轻、快、部署简单</li>
+            <li>一开始数据结构和页面信息都不稳定，重前端框架反而会拖慢速度</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="margin-top:16px;">
+        所以：现在的 Web 不是“落后”，而是典型的 <strong>业务先行、工程后补</strong>。
+        这在早期是正确的；只不过到了现在，前端代码体量已经开始逼近“该继续模块化治理”的节点。
+      </div>
+      <div class="grid-3" style="margin-top:16px;">
+        <div class="card">
+          <h3>当前好处</h3>
+          <ul>
+            <li>开发快</li>
+            <li>部署简单</li>
+            <li>跟后端和数据层耦合明确</li>
+            <li>适合快速打样和频繁调整</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>当前问题</h3>
+          <ul>
+            <li><code>app.js</code> 体量偏大</li>
+            <li>页面逻辑越来越多，维护门槛在上升</li>
+            <li>长期来看，不利于多人同时改前端</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>更合理的目标</h3>
+          <ul>
+            <li>继续保留 FastAPI + 静态前端大方向</li>
+            <li>前端按页面和功能拆模块</li>
+            <li>不必立刻整体重构成 React</li>
+            <li>先把信息架构和 API 稳定下来</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>每个核心模块，具体怎么理解</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>模块</th>
+            <th>现在是什么</th>
+            <th>为什么这样设计</th>
+            <th>当前好坏判断</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>类目爬虫</td>
+            <td>深度扫描类目树，抓子类目商品，再逐步写入 stage</td>
+            <td>类目维度更像“铺网”，适合找大盘机会</td>
+            <td>成熟度高，是当前最稳定的采集主力</td>
+          </tr>
+          <tr>
+            <td>关键词爬虫</td>
+            <td>围绕关键词 monitor、批次、扩词、质量分层跑</td>
+            <td>关键词更适合做高意图商品发现和市场热点跟踪</td>
+            <td>有深度，但比类目链路更复杂，也更需要治理</td>
+          </tr>
+          <tr>
+            <td>stage 数据库</td>
+            <td>保存原始观测和中间结果</td>
+            <td>防止 Web 直接读 runtime，避免“半成品数据”污染前台</td>
+            <td>这是正确设计，说明你们不是简单脚本拼接</td>
+          </tr>
+          <tr>
+            <td>warehouse</td>
+            <td>把类目和关键词数据统一成一个可读模型</td>
+            <td>Web 只读一层，后续 ERP 也只认一层</td>
+            <td>这是最关键的“平台化步骤”，方向非常对</td>
+          </tr>
+          <tr>
+            <td>ops / task center</td>
+            <td>任务、worker、计划、进度、重试、lease 都在这层</td>
+            <td>爬虫不再靠手工命令，而是靠运行中心管理</td>
+            <td>说明项目已开始从工具走向系统</td>
+          </tr>
+          <tr>
+            <td>Web 工作台</td>
+            <td>ERP 风格研究界面，读 warehouse 做筛选、比对、详情</td>
+            <td>让运营不是看文件，而是看工作台</td>
+            <td>方向很对，但距离成熟 ERP 还需继续产品化</td>
+          </tr>
+          <tr>
+            <td>NAS stable</td>
+            <td>正式运行环境，有发布、回滚、Cloudflare Access、Postgres</td>
+            <td>把“本地开发”与“运营环境”隔离</td>
+            <td>这一步非常关键，说明项目已经能承载真实运行</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>现在这样做得好的地方</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>1. 没有把 Web 直接绑死在爬虫结果上</h3>
+          <div>很多项目最大的问题是：爬虫一跑，前台就直接读结果，最后又脏又乱。你们不是这样，已经有 stage 和 warehouse 分层。</div>
+        </div>
+        <div class="card">
+          <h3>2. 已经有“运行中心”意识</h3>
+          <div>任务、worker、调度、sync、health 这些都已经出现了，说明不是临时脚本了。</div>
+        </div>
+        <div class="card">
+          <h3>3. 环境隔离已经成型</h3>
+          <div>local beta 和 nas stable 分开，是长期运行项目必须具备的条件。</div>
+        </div>
+        <div class="card">
+          <h3>4. 文档治理超出一般小项目</h3>
+          <div>白皮书、handoff、collab log 的存在，能大幅减少多窗口 Codex 协作时的失控。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>现在还不够好的地方</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>1. 主入口文件仍然偏大</h3>
+          <div>像 <code>keyword_main.py</code>、<code>web_beta/app.py</code>、<code>web_beta/static/app.js</code> 体量都不小，说明系统正在从“可跑”向“可长期维护”过渡。</div>
+        </div>
+        <div class="card">
+          <h3>2. 根目录工具还没完全并入平台</h3>
+          <div>定价、周报、NIS、分析器很有价值，但现在更像工具箱，不是平台内一个统一流程。</div>
+        </div>
+        <div class="card">
+          <h3>3. 本地与稳定环境心智模型较复杂</h3>
+          <div>因为处在“SQLite 工具时代”向“Postgres 平台时代”的中间地带，所以理解门槛高。</div>
+        </div>
+        <div class="card">
+          <h3>4. 还没进入真正 ERP 阶段</h3>
+          <div>现在强项是“商品 intelligence”，未来还要加采购、库存、销售、补货计划，才能成为完整经营中台。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>最终最合理的结构，应该长成什么样</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <h3>A. 数据接入层</h3>
+          <div>类目爬虫、关键词爬虫、Seller Lab 报表、SFTP、FBPI/订单/库存等适配器。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>B. 原始与阶段层</h3>
+          <div>保留原始观测、批次、导入记录、失败证据、日志和中间结果。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>C. 统一经营仓库</h3>
+          <div>以产品、库存、采购、销售、补货为中心的数据模型，供 Web 和 ERP 使用。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>D. ERP 核心层</h3>
+          <div>采购单、在途、FBN库存、销量、补货建议、审批状态、执行反馈。</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <h3>E. 协同输出层</h3>
+          <div>飞书/企微通知、审批流、日报、预警、任务分派。</div>
+        </div>
+      </div>
+
+      <table style="margin-top:18px;">
+        <thead>
+          <tr>
+            <th>层级</th>
+            <th>你现在有多少</th>
+            <th>下一步该补什么</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>数据接入</td>
+            <td>已经很强</td>
+            <td>继续增加正式渠道，如 Seller Lab / SFTP / ERP 连接器</td>
+          </tr>
+          <tr>
+            <td>统一仓库</td>
+            <td>已经有明确雏形</td>
+            <td>把未来采购、库存、销售也并到统一经营模型</td>
+          </tr>
+          <tr>
+            <td>运营工作台</td>
+            <td>已经可用</td>
+            <td>继续向成熟 ERP 界面演进</td>
+          </tr>
+          <tr>
+            <td>经营中台 / ERP</td>
+            <td>还没完全成型</td>
+            <td>这会是未来最重要的一步</td>
+          </tr>
+          <tr>
+            <td>审批与协同</td>
+            <td>还没正式接</td>
+            <td>后续由 ERP 往飞书/企微推送，而不是反过来</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>如果你只记住 8 句话</h2>
+      <ol>
+        <li>这个项目现在已经不是单纯爬虫，而是“爬虫 + 仓库 + Web 工作台”的系统。</li>
+        <li>真正的主系统在 <code>noon-selection-tool/</code>，根目录很多工具是外挂型资产。</li>
+        <li>现在的数据库不是乱，而是按职责拆分：stage、warehouse、ops。</li>
+        <li>一开始用 SQLite 是对的，因为当时目标是快速落地，而不是先上重型基础设施。</li>
+        <li>现在 NAS stable 走 Postgres，也是对的，因为系统已经进入正式运行阶段。</li>
+        <li>Web 当前是“轻前端 + 强数据层”的路线，这不是落后，而是阶段性选择。</li>
+        <li>未来真正的大目标，不是把爬虫继续做大，而是把它接进 ERP，形成采购、库存、销售、补货闭环。</li>
+        <li>飞书/企业微信未来更适合做协同和审批，不适合做这个系统的核心数据库。</li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>我对目前项目的整体判断</h2>
+      <div class="quote">
+        这是一个已经跨过“玩具项目”阶段、正在从“强工具链”走向“经营平台”的项目。<br /><br />
+        它现在最强的，不是 UI，也不是某一个脚本，而是：<strong>你们已经搭出了一个正确的中间层架构</strong>。<br />
+        真正决定未来上限的，不是再多做一个爬虫，而是把现有的商品 intelligence 系统，继续接到采购、库存、销售和补货计划上。
+      </div>
+      <p class="footer-note">
+        这份说明基于 2026-04-13 当前仓库实际代码、文档和数据库状态生成，重点参考了 <code>PROJECT_WHITEPAPER.md</code>、<code>DEV_HANDOFF.md</code>、<code>docker-compose.yml</code>、<code>ops/task_store.py</code>、<code>config/product_store.py</code>、<code>build_analytics_warehouse.py</code>、<code>web_beta/app.py</code> 等主路径文件。
+      </p>
+    </section>
+  </div>
+</body>
+</html>

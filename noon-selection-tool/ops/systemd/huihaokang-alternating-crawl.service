@@ -1,0 +1,17 @@
+[Unit]
+Description=Huihaokang alternating crawl service
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/volume1/docker/huihaokang-erp/current
+Environment=PYTHONUNBUFFERED=1
+Environment=NOON_RUNNER_BASE_URL=http://127.0.0.1:8865
+Environment=NOON_REPORT_ROOT=/volume1/docker/huihaokang-erp/shared/report/crawl
+ExecStart=/bin/bash -lc 'mkdir -p /volume1/docker/huihaokang-erp/shared/report/crawl/state && /usr/bin/python3 /volume1/docker/huihaokang-erp/current/tools/run_alternating_crawl_service.py >> /volume1/docker/huihaokang-erp/shared/report/crawl/state/alternating_runner.log 2>&1'
+Restart=always
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,192 @@
+name: ${COMPOSE_PROJECT_NAME:-huihaokang-stable}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: huihaokang-postgres
+    env_file:
+      - .env.nas
+    environment:
+      POSTGRES_DB: ${NOON_POSTGRES_DB:-noon}
+      POSTGRES_USER: ${NOON_POSTGRES_USER:-noon}
+      POSTGRES_PASSWORD: ${NOON_POSTGRES_PASSWORD:-noon_local_dev}
+    volumes:
+      - ${NOON_HOST_POSTGRES_DIR:-./postgres}:/var/lib/postgresql/data
+    ports:
+      - "${NOON_POSTGRES_BIND_HOST:-127.0.0.1}:${NOON_POSTGRES_BIND_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${NOON_POSTGRES_USER:-noon} -d ${NOON_POSTGRES_DB:-noon}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  web:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: huihaokang-web
+    env_file:
+      - .env.nas
+    environment:
+      NOON_RUNTIME_SCOPE: stable
+      NOON_WAREHOUSE_DB: /app/data/analytics/warehouse.db
+      NOON_OPS_DB: /app/data/ops/ops.db
+      NOON_PRODUCT_STORE_DB: /app/data/product_store.db
+      NOON_REPORT_ROOT: /app/runtime_data/crawl_reports
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL:-}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL:-}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL:-}
+      NOON_BROWSER_HEADLESS: "true"
+      NOON_BROWSER_PROFILE_ROOT: /app/browser_profiles
+    command: uvicorn web_beta.app:app --host 0.0.0.0 --port 8865
+    ports:
+      - "8865:8865"
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  scheduler:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    container_name: huihaokang-scheduler
+    env_file:
+      - .env.nas
+    environment:
+      NOON_RUNTIME_SCOPE: stable
+      NOON_WAREHOUSE_DB: /app/data/analytics/warehouse.db
+      NOON_OPS_DB: /app/data/ops/ops.db
+      NOON_PRODUCT_STORE_DB: /app/data/product_store.db
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL:-}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL:-}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL:-}
+    command: python run_task_scheduler.py --mode scheduler --poll-seconds 15
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  keyword-worker:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    container_name: huihaokang-keyword-worker
+    env_file:
+      - .env.nas
+    environment:
+      NOON_RUNTIME_SCOPE: keyword
+      NOON_WORKER_TYPE: keyword
+      NOON_WAREHOUSE_DB: /app/data/analytics/warehouse.db
+      NOON_OPS_DB: /app/data/ops/ops.db
+      NOON_PRODUCT_STORE_DB: /app/data/product_store.db
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL:-}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL:-}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL:-}
+      NOON_BROWSER_HEADLESS: "true"
+      NOON_BROWSER_PROFILE_ROOT: /app/browser_profiles/keyword
+    command: python run_task_scheduler.py --mode worker --worker-type keyword --poll-seconds 10
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  category-worker:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    container_name: huihaokang-category-worker
+    profiles: ["local-category"]
+    env_file:
+      - .env.nas
+    environment:
+      NOON_RUNTIME_SCOPE: category
+      NOON_WORKER_TYPE: category
+      NOON_WAREHOUSE_DB: /app/data/analytics/warehouse.db
+      NOON_OPS_DB: /app/data/ops/ops.db
+      NOON_PRODUCT_STORE_DB: /app/data/product_store.db
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL:-}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL:-}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL:-}
+      NOON_BROWSER_HEADLESS: "true"
+      NOON_BROWSER_PROFILE_ROOT: /app/browser_profiles/category
+    command: python run_task_scheduler.py --mode worker --worker-type category --poll-seconds 10
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  sync-worker:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    container_name: huihaokang-sync-worker
+    env_file:
+      - .env.nas
+    environment:
+      NOON_RUNTIME_SCOPE: stable
+      NOON_WORKER_TYPE: sync
+      NOON_WAREHOUSE_DB: /app/data/analytics/warehouse.db
+      NOON_OPS_DB: /app/data/ops/ops.db
+      NOON_PRODUCT_STORE_DB: /app/data/product_store.db
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL:-}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL:-}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL:-}
+    command: python run_task_scheduler.py --mode worker --worker-type sync --poll-seconds 10
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: huihaokang-cloudflared
+    profiles: ["tunnel"]
+    env_file:
+      - .env.nas
+    command: tunnel --no-autoupdate run
+    depends_on:
+      - web
+    networks:
+      - stable-net
+    restart: unless-stopped
+
+networks:
+  stable-net:
+    name: ${NOON_STABLE_NETWORK_NAME:-huihaokang-stable-net}

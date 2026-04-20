@@ -1,0 +1,13 @@
+playwright
+playwright-stealth
+beautifulsoup4
+pandas
+pyarrow
+openpyxl
+pytrends
+httpx
+pydantic-settings
+python-dotenv
+fastapi
+uvicorn
+psycopg[binary]

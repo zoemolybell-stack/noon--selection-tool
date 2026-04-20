@@ -1,0 +1,14 @@
+# tracked baseline keywords
+# 每行一个关键词；以 # 开头的行为注释，不会进入关键词池
+#
+# 维护建议：
+# 1. 放你希望长期轮巡的基准词
+# 2. 优先放大类需求词，再逐步补细分词
+# 3. 后续 monitor 会基于这些词去扩展联想词并持续抓取
+#
+# 示例（取消注释后生效）：
+# shoes
+# sneakers
+# running shoes
+# office chair
+# water bottle

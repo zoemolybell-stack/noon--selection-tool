@@ -1,0 +1,1602 @@
+{
+  "name": "Noon 平台完整类目树",
+  "version": "2.1",
+  "updated_at": "2026-03-20",
+  "description": "Noon 沙特站官方类目结构（1-3 层）",
+  "categories": [
+    {
+      "id": "electronics",
+      "name_en": "Electronics",
+      "name_zh": "电子产品",
+      "children": [
+        {
+          "id": "mobiles_tablets",
+          "name_en": "Mobiles & Tablets",
+          "name_zh": "手机/平板",
+          "children": [
+            {
+              "id": "smartphones",
+              "name_en": "Smartphones",
+              "name_zh": "智能手机"
+            },
+            {
+              "id": "tablets",
+              "name_en": "Tablets",
+              "name_zh": "平板电脑"
+            },
+            {
+              "id": "feature_phones",
+              "name_en": "Feature Phones",
+              "name_zh": "功能手机"
+            },
+            {
+              "id": "accessories",
+              "name_en": "Mobile Accessories",
+              "name_zh": "手机配件"
+            }
+          ]
+        },
+        {
+          "id": "computers_laptops",
+          "name_en": "Computers Laptops",
+          "name_zh": "电脑/笔记本",
+          "children": [
+            {
+              "id": "laptops",
+              "name_en": "Laptops",
+              "name_zh": "笔记本电脑"
+            },
+            {
+              "id": "desktops",
+              "name_en": "Desktops",
+              "name_zh": "台式电脑"
+            },
+            {
+              "id": "monitors",
+              "name_en": "Monitors",
+              "name_zh": "显示器"
+            },
+            {
+              "id": "printers",
+              "name_en": "Printers & Scanners",
+              "name_zh": "打印机/扫描仪"
+            },
+            {
+              "id": "computer_accessories",
+              "name_en": "Computer Accessories",
+              "name_zh": "电脑配件"
+            }
+          ]
+        },
+        {
+          "id": "audio",
+          "name_en": "Audio",
+          "name_zh": "音频设备",
+          "children": [
+            {
+              "id": "headphones",
+              "name_en": "Headphones & Earbuds",
+              "name_zh": "耳机/耳塞"
+            },
+            {
+              "id": "speakers",
+              "name_en": "Portable Bluetooth Speakers",
+              "name_zh": "音箱"
+            },
+            {
+              "id": "home_audio",
+              "name_en": "Home Audio",
+              "name_zh": "家庭音响"
+            }
+          ]
+        },
+        {
+          "id": "cameras",
+          "name_en": "Camera, Photo & Video",
+          "name_zh": "相机/摄影",
+          "children": [
+            {
+              "id": "digital_cameras",
+              "name_en": "Digital Cameras",
+              "name_zh": "数码相机"
+            },
+            {
+              "id": "action_cameras",
+              "name_en": "Action Cameras",
+              "name_zh": "运动相机"
+            },
+            {
+              "id": "camera_lenses",
+              "name_en": "Camera Lenses",
+              "name_zh": "相机镜头"
+            },
+            {
+              "id": "camera_accessories",
+              "name_en": "Camera & Photo Accessories",
+              "name_zh": "相机配件"
+            }
+          ]
+        },
+        {
+          "id": "gaming",
+          "name_en": "Video Games",
+          "name_zh": "游戏",
+          "children": [
+            {
+              "id": "consoles",
+              "name_en": "Gaming Consoles",
+              "name_zh": "游戏主机"
+            },
+            {
+              "id": "games",
+              "name_en": "Video Games",
+              "name_zh": "游戏软件"
+            },
+            {
+              "id": "gaming_accessories",
+              "name_en": "Video Game Accessories",
+              "name_zh": "游戏配件"
+            }
+          ]
+        },
+        {
+          "id": "wearables",
+          "name_en": "Wearables",
+          "name_zh": "智能穿戴",
+          "children": [
+            {
+              "id": "smartwatches",
+              "name_en": "Smartwatches",
+              "name_zh": "智能手表"
+            },
+            {
+              "id": "fitness_trackers",
+              "name_en": "Fitness Trackers",
+              "name_zh": "健身追踪器"
+            },
+            {
+              "id": "vr_headsets",
+              "name_en": "Virtual Reality Headsets",
+              "name_zh": "VR 头显"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home_kitchen",
+      "name_en": "Home & Kitchen",
+      "name_zh": "家居/厨房",
+      "children": [
+        {
+          "id": "furniture",
+          "name_en": "Furniture",
+          "name_zh": "家具",
+          "children": [
+            {
+              "id": "living_room",
+              "name_en": "Living Room",
+              "name_zh": "客厅家具"
+            },
+            {
+              "id": "bedroom",
+              "name_en": "Bedroom Furniture",
+              "name_zh": "卧室家具"
+            },
+            {
+              "id": "kitchen_dining",
+              "name_en": "Kitchen & Dining Furniture",
+              "name_zh": "餐厅家具"
+            },
+            {
+              "id": "office_furniture",
+              "name_en": "Home Office Furniture",
+              "name_zh": "办公家具"
+            }
+          ]
+        },
+        {
+          "id": "kitchen_appliances",
+          "name_en": "Kitchen Appliances",
+          "name_zh": "厨房电器",
+          "children": [
+            {
+              "id": "small_appliances",
+              "name_en": "Small Kitchen Appliances",
+              "name_zh": "小型厨房电器"
+            },
+            {
+              "id": "cookware",
+              "name_en": "Cookware",
+              "name_zh": "炊具"
+            },
+            {
+              "id": "bakeware",
+              "name_en": "Bakeware",
+              "name_zh": "烘焙用具"
+            },
+            {
+              "id": "kitchen_tools",
+              "name_en": "Kitchen Utensils and Gadgets",
+              "name_zh": "厨房工具"
+            }
+          ]
+        },
+        {
+          "id": "home_appliances",
+          "name_en": "Home Appliances",
+          "name_zh": "家用电器",
+          "children": [
+            {
+              "id": "vacuum_cleaners",
+              "name_en": "Vacuums and Floor Care",
+              "name_zh": "吸尘器"
+            },
+            {
+              "id": "air_conditioners",
+              "name_en": "Air Conditioners",
+              "name_zh": "空调"
+            },
+            {
+              "id": "fans",
+              "name_en": "Fans",
+              "name_zh": "风扇/冷却器"
+            },
+            {
+              "id": "heaters",
+              "name_en": "Heaters",
+              "name_zh": "取暖器"
+            },
+            {
+              "id": "washing_machines",
+              "name_en": "Washing Machines",
+              "name_zh": "洗衣机"
+            },
+            {
+              "id": "refrigerators",
+              "name_en": "Refrigerators",
+              "name_zh": "冰箱"
+            }
+          ]
+        },
+        {
+          "id": "home_decor",
+          "name_en": "Home Decor",
+          "name_zh": "家居装饰",
+          "children": [
+            {
+              "id": "lighting",
+              "name_en": "Lighting",
+              "name_zh": "照明灯具"
+            },
+            {
+              "id": "rugs_carpets",
+              "name_en": "Area Rugs and Pads",
+              "name_zh": "地毯"
+            },
+            {
+              "id": "curtains",
+              "name_en": "Curtains",
+              "name_zh": "窗帘"
+            },
+            {
+              "id": "wall_decor",
+              "name_en": "Wall Decor",
+              "name_zh": "墙面装饰"
+            }
+          ]
+        },
+        {
+          "id": "storage_organization",
+          "name_en": "Storage & Organisation",
+          "name_zh": "收纳整理",
+          "children": [
+            {
+              "id": "storage_boxes",
+              "name_en": "Storage Boxes",
+              "name_zh": "收纳箱"
+            },
+            {
+              "id": "wardrobes",
+              "name_en": "Wardrobes",
+              "name_zh": "衣柜"
+            },
+            {
+              "id": "shoe_racks",
+              "name_en": "Shoe Racks",
+              "name_zh": "鞋架"
+            }
+          ]
+        },
+        {
+          "id": "bedding_bath",
+          "name_en": "Bedding & Bath",
+          "name_zh": "床上用品/浴室",
+          "children": [
+            {
+              "id": "bed_sheets",
+              "name_en": "Bed Sheets",
+              "name_zh": "床单"
+            },
+            {
+              "id": "pillows",
+              "name_en": "Bed Pillows",
+              "name_zh": "枕头/靠垫"
+            },
+            {
+              "id": "towels",
+              "name_en": "Towels",
+              "name_zh": "毛巾"
+            },
+            {
+              "id": "bathroom_accessories",
+              "name_en": "Bathroom Accessories",
+              "name_zh": "浴室配件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fashion",
+      "name_en": "Fashion",
+      "name_zh": "时尚服装",
+      "children": [
+        {
+          "id": "mens_fashion",
+          "name_en": "Men's Fashion",
+          "name_zh": "男装",
+          "children": [
+            {
+              "id": "mens_clothing",
+              "name_en": "Men's Clothing",
+              "name_zh": "男装上衣"
+            },
+            {
+              "id": "mens_shoes",
+              "name_en": "Men's Shoes",
+              "name_zh": "男鞋"
+            },
+            {
+              "id": "mens_accessories",
+              "name_en": "Men's Accessories",
+              "name_zh": "男装配件"
+            },
+            {
+              "id": "mens_watches",
+              "name_en": "Men's Watches",
+              "name_zh": "男表"
+            }
+          ]
+        },
+        {
+          "id": "womens_fashion",
+          "name_en": "Women's Fashion",
+          "name_zh": "女装",
+          "children": [
+            {
+              "id": "womens_clothing",
+              "name_en": "Women's Clothing",
+              "name_zh": "女装上衣"
+            },
+            {
+              "id": "womens_dresses",
+              "name_en": "Women's Dresses",
+              "name_zh": "女装连衣裙"
+            },
+            {
+              "id": "womens_shoes",
+              "name_en": "Women's Shoes",
+              "name_zh": "女鞋"
+            },
+            {
+              "id": "womens_bags",
+              "name_en": "Women's Handbags",
+              "name_zh": "女包"
+            },
+            {
+              "id": "womens_jewelry",
+              "name_en": "Women's Jewellery",
+              "name_zh": "女士珠宝"
+            },
+            {
+              "id": "womens_watches",
+              "name_en": "Women's Watches",
+              "name_zh": "女表"
+            }
+          ]
+        },
+        {
+          "id": "kids_fashion",
+          "name_en": "Kids' Fashion",
+          "name_zh": "童装",
+          "children": [
+            {
+              "id": "boys_clothing",
+              "name_en": "Boys' Clothing",
+              "name_zh": "男童服装"
+            },
+            {
+              "id": "girls_clothing",
+              "name_en": "Girls' Clothing",
+              "name_zh": "女童服装"
+            },
+            {
+              "id": "kids_shoes",
+              "name_en": "Kids Shoes",
+              "name_zh": "童鞋"
+            },
+            {
+              "id": "baby_clothing",
+              "name_en": "Baby Clothing and Shoes",
+              "name_zh": "婴儿服装"
+            }
+          ]
+        },
+        {
+          "id": "luxury_fashion",
+          "name_en": "Luxury Fashion",
+          "name_zh": "奢侈品",
+          "children": [
+            {
+              "id": "luxury_bags",
+              "name_en": "Luxury Bags",
+              "name_zh": "奢侈品包"
+            },
+            {
+              "id": "luxury_watches",
+              "name_en": "Luxury Watches",
+              "name_zh": "奢侈品手表"
+            },
+            {
+              "id": "luxury_jewelry",
+              "name_en": "Luxury Jewelry",
+              "name_zh": "奢侈品珠宝"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beauty",
+      "name_en": "Beauty & Personal Care",
+      "name_zh": "美妆个护",
+      "children": [
+        {
+          "id": "skincare",
+          "name_en": "Skincare",
+          "name_zh": "护肤品",
+          "children": [
+            {
+              "id": "face_care",
+              "name_en": "Face Care",
+              "name_zh": "面部护理"
+            },
+            {
+              "id": "body_care",
+              "name_en": "Body Care",
+              "name_zh": "身体护理"
+            },
+            {
+              "id": "sun_care",
+              "name_en": "Sun Care",
+              "name_zh": "防晒"
+            }
+          ]
+        },
+        {
+          "id": "makeup",
+          "name_en": "Makeup",
+          "name_zh": "彩妆",
+          "children": [
+            {
+              "id": "face_makeup",
+              "name_en": "Face Makeup",
+              "name_zh": "面部彩妆"
+            },
+            {
+              "id": "eye_makeup",
+              "name_en": "Eyes",
+              "name_zh": "眼部彩妆"
+            },
+            {
+              "id": "lip_makeup",
+              "name_en": "Lips",
+              "name_zh": "唇部彩妆"
+            },
+            {
+              "id": "nail_care",
+              "name_en": "Nail Makeup",
+              "name_zh": "美甲"
+            }
+          ]
+        },
+        {
+          "id": "hair_care",
+          "name_en": "Hair Care",
+          "name_zh": "护发",
+          "children": [
+            {
+              "id": "shampoo",
+              "name_en": "Shampoo",
+              "name_zh": "洗发水"
+            },
+            {
+              "id": "conditioner",
+              "name_en": "Conditioner",
+              "name_zh": "护发素"
+            },
+            {
+              "id": "hair_styling",
+              "name_en": "Styling Products",
+              "name_zh": "造型产品"
+            },
+            {
+              "id": "hair_tools",
+              "name_en": "Styling Tools",
+              "name_zh": "美发工具"
+            }
+          ]
+        },
+        {
+          "id": "fragrances",
+          "name_en": "Fragrances",
+          "name_zh": "香水",
+          "children": [
+            {
+              "id": "mens_fragrances",
+              "name_en": "Mens Fragrances",
+              "name_zh": "男士香水"
+            },
+            {
+              "id": "womens_fragrances",
+              "name_en": "Womens Fragrances",
+              "name_zh": "女士香水"
+            },
+            {
+              "id": "unisex_fragrances",
+              "name_en": "Unisex Fragrances",
+              "name_zh": "中性香水"
+            }
+          ]
+        },
+        {
+          "id": "personal_care",
+          "name_en": "Personal Care",
+          "name_zh": "个人护理",
+          "children": [
+            {
+              "id": "oral_care",
+              "name_en": "Oral Hygiene",
+              "name_zh": "口腔护理"
+            },
+            {
+              "id": "body_hygiene",
+              "name_en": "Bath & Body",
+              "name_zh": "身体清洁"
+            },
+            {
+              "id": "deodorants",
+              "name_en": "Deodorants",
+              "name_zh": "除臭剂"
+            }
+          ]
+        },
+        {
+          "id": "beauty_tools",
+          "name_en": "Beauty Tools",
+          "name_zh": "美容工具",
+          "children": [
+            {
+              "id": "makeup_brushes",
+              "name_en": "Makeup Brushes",
+              "name_zh": "化妆刷"
+            },
+            {
+              "id": "mirrors",
+              "name_en": "Mirrors",
+              "name_zh": "化妆镜"
+            },
+            {
+              "id": "beauty_devices",
+              "name_en": "Facial Machines",
+              "name_zh": "美容仪器"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "baby",
+      "name_en": "Baby & Kids",
+      "name_zh": "母婴/儿童",
+      "children": [
+        {
+          "id": "baby_gear",
+          "name_en": "Baby Gear",
+          "name_zh": "婴儿用品",
+          "children": [
+            {
+              "id": "strollers",
+              "name_en": "Strollers",
+              "name_zh": "婴儿车"
+            },
+            {
+              "id": "car_seats",
+              "name_en": "Car Seats",
+              "name_zh": "安全座椅"
+            },
+            {
+              "id": "baby_carriers",
+              "name_en": "Carrier and Slings",
+              "name_zh": "婴儿背带"
+            },
+            {
+              "id": "high_chairs",
+              "name_en": "Highchairs",
+              "name_zh": "餐椅"
+            }
+          ]
+        },
+        {
+          "id": "baby_care",
+          "name_en": "Baby Care",
+          "name_zh": "婴儿护理",
+          "children": [
+            {
+              "id": "diapers",
+              "name_en": "Diapers",
+              "name_zh": "纸尿裤/湿巾"
+            },
+            {
+              "id": "baby_bath",
+              "name_en": "Bathing and Baby Care",
+              "name_zh": "婴儿沐浴"
+            },
+            {
+              "id": "baby_skincare",
+              "name_en": "Hair Body and Skin Care",
+              "name_zh": "婴儿护肤"
+            },
+            {
+              "id": "baby_grooming",
+              "name_en": "Grooming and Healthcare Kits",
+              "name_zh": "婴儿护理工具"
+            }
+          ]
+        },
+        {
+          "id": "baby_feeding",
+          "name_en": "Baby Feeding",
+          "name_zh": "婴儿喂养",
+          "children": [
+            {
+              "id": "bottles",
+              "name_en": "Bottles",
+              "name_zh": "奶瓶"
+            },
+            {
+              "id": "breast_pumps",
+              "name_en": "Breast Pumps",
+              "name_zh": "吸奶器"
+            },
+            {
+              "id": "baby_food",
+              "name_en": "Baby Foods",
+              "name_zh": "婴儿食品"
+            },
+            {
+              "id": "high_chairs_boosters",
+              "name_en": "Highchairs and Booster Seats",
+              "name_zh": "餐椅/增高垫"
+            }
+          ]
+        },
+        {
+          "id": "baby_nursery",
+          "name_en": "Baby Nursery",
+          "name_zh": "婴儿房",
+          "children": [
+            {
+              "id": "cribs",
+              "name_en": "Cribs Beds Mattresses",
+              "name_zh": "婴儿床"
+            },
+            {
+              "id": "baby_bedding",
+              "name_en": "Baby Bedding",
+              "name_zh": "婴儿床品"
+            },
+            {
+              "id": "baby_monitors",
+              "name_en": "Baby Monitors",
+              "name_zh": "婴儿监视器"
+            }
+          ]
+        },
+        {
+          "id": "toys",
+          "name_en": "Toys",
+          "name_zh": "玩具",
+          "children": [
+            {
+              "id": "educational_toys",
+              "name_en": "Learning and Education",
+              "name_zh": "益智玩具"
+            },
+            {
+              "id": "action_figures",
+              "name_en": "Action Figures",
+              "name_zh": "动作人偶"
+            },
+            {
+              "id": "dolls",
+              "name_en": "Dolls and Accessories",
+              "name_zh": "娃娃"
+            },
+            {
+              "id": "building_toys",
+              "name_en": "Building Toys",
+              "name_zh": "积木玩具"
+            },
+            {
+              "id": "outdoor_toys",
+              "name_en": "Sports and Outdoor Play",
+              "name_zh": "户外玩具"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "name_en": "Sports & Fitness",
+      "name_zh": "运动/健身",
+      "children": [
+        {
+          "id": "fitness_equipment",
+          "name_en": "Fitness Equipment",
+          "name_zh": "健身器材",
+          "children": [
+            {
+              "id": "treadmills",
+              "name_en": "Treadmills",
+              "name_zh": "跑步机"
+            },
+            {
+              "id": "exercise_bikes",
+              "name_en": "Exercise Bikes",
+              "name_zh": "健身车"
+            },
+            {
+              "id": "weights",
+              "name_en": "Dumbbells",
+              "name_zh": "哑铃/杠铃"
+            },
+            {
+              "id": "yoga_pilates",
+              "name_en": "Yoga",
+              "name_zh": "瑜伽/普拉提"
+            }
+          ]
+        },
+        {
+          "id": "sports_clothing",
+          "name_en": "Sports Clothing",
+          "name_zh": "运动服装",
+          "children": [
+            {
+              "id": "mens_sportswear",
+              "name_en": "Men's Activewear",
+              "name_zh": "男装运动服"
+            },
+            {
+              "id": "womens_sportswear",
+              "name_en": "Women's Activewear",
+              "name_zh": "女装运动服"
+            },
+            {
+              "id": "sports_shoes",
+              "name_en": "Sports Shoes",
+              "name_zh": "运动鞋"
+            }
+          ]
+        },
+        {
+          "id": "outdoor_recreation",
+          "name_en": "Outdoor Recreation",
+          "name_zh": "户外运动",
+          "children": [
+            {
+              "id": "camping",
+              "name_en": "Camping & Hiking",
+              "name_zh": "露营/徒步"
+            },
+            {
+              "id": "cycling",
+              "name_en": "Cycling",
+              "name_zh": "骑行"
+            },
+            {
+              "id": "water_sports",
+              "name_en": "Boating & Water Sports",
+              "name_zh": "水上运动"
+            },
+            {
+              "id": "winter_sports",
+              "name_en": "Winter Sports",
+              "name_zh": "冬季运动"
+            }
+          ]
+        },
+        {
+          "id": "team_sports",
+          "name_en": "Team Sports",
+          "name_zh": "团队运动",
+          "children": [
+            {
+              "id": "football",
+              "name_en": "Football",
+              "name_zh": "足球"
+            },
+            {
+              "id": "basketball",
+              "name_en": "Basketball",
+              "name_zh": "篮球"
+            },
+            {
+              "id": "cricket",
+              "name_en": "Cricket",
+              "name_zh": "板球"
+            },
+            {
+              "id": "tennis",
+              "name_en": "Tennis",
+              "name_zh": "网球"
+            }
+          ]
+        },
+        {
+          "id": "sports_accessories",
+          "name_en": "Sports Accessories",
+          "name_zh": "运动配件",
+          "children": [
+            {
+              "id": "fitness_trackers",
+              "name_en": "Fitness Trackers",
+              "name_zh": "健身追踪器"
+            },
+            {
+              "id": "sports_bags",
+              "name_en": "Backpacks & Bags",
+              "name_zh": "运动包"
+            },
+            {
+              "id": "water_bottles",
+              "name_en": "Sports Water Bottles",
+              "name_zh": "水壶"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "automotive",
+      "name_en": "Automotive",
+      "name_zh": "汽车/摩托",
+      "children": [
+        {
+          "id": "car_accessories",
+          "name_en": "Car Accessories",
+          "name_zh": "汽车配件",
+          "children": [
+            {
+              "id": "car_electronics",
+              "name_en": "Car Electronics",
+              "name_zh": "汽车电子"
+            },
+            {
+              "id": "car_decor",
+              "name_en": "Car Decor",
+              "name_zh": "汽车装饰"
+            },
+            {
+              "id": "car_care",
+              "name_en": "Car Care",
+              "name_zh": "汽车养护"
+            },
+            {
+              "id": "car_safety",
+              "name_en": "Automotive Interior Safety Accessories",
+              "name_zh": "汽车安全"
+            }
+          ]
+        },
+        {
+          "id": "car_parts",
+          "name_en": "Automotive Replacement Parts",
+          "name_zh": "汽车零部件",
+          "children": [
+            {
+              "id": "engine_parts",
+              "name_en": "Engine Parts",
+              "name_zh": "发动机零部件"
+            },
+            {
+              "id": "brake_system",
+              "name_en": "Brake System",
+              "name_zh": "制动系统"
+            },
+            {
+              "id": "suspension",
+              "name_en": "Suspension",
+              "name_zh": "悬挂系统"
+            },
+            {
+              "id": "exhaust_system",
+              "name_en": "Exhaust System",
+              "name_zh": "排气系统"
+            }
+          ]
+        },
+        {
+          "id": "motorcycle",
+          "name_en": "Motorcycle",
+          "name_zh": "摩托车",
+          "children": [
+            {
+              "id": "motorcycle_parts",
+              "name_en": "Motorcycle & Powersports Parts",
+              "name_zh": "摩托车零部件"
+            },
+            {
+              "id": "motorcycle_accessories",
+              "name_en": "Motorcycle Accessories",
+              "name_zh": "摩托车配件"
+            },
+            {
+              "id": "helmets",
+              "name_en": "Helmets",
+              "name_zh": "头盔"
+            }
+          ]
+        },
+        {
+          "id": "tools_equipment",
+          "name_en": "Care Care Tools & Equipment",
+          "name_zh": "工具/设备",
+          "children": [
+            {
+              "id": "diagnostic_tools",
+              "name_en": "Diagnostic Tools",
+              "name_zh": "诊断工具"
+            },
+            {
+              "id": "repair_tools",
+              "name_en": "Car Repair Tools",
+              "name_zh": "维修工具"
+            },
+            {
+              "id": "car_lifts",
+              "name_en": "Car Lifts",
+              "name_zh": "汽车升降机"
+            }
+          ]
+        },
+        {
+          "id": "car_care_products",
+          "name_en": "Car Care Products",
+          "name_zh": "汽车养护用品",
+          "children": [
+            {
+              "id": "car_wash",
+              "name_en": "Car Wash",
+              "name_zh": "洗车用品"
+            },
+            {
+              "id": "polish_wax",
+              "name_en": "Car Polishes & Waxes",
+              "name_zh": "抛光/打蜡"
+            },
+            {
+              "id": "interior_care",
+              "name_en": "Interior Care",
+              "name_zh": "内饰护理"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grocery",
+      "name_en": "Grocery & Food",
+      "name_zh": "食品/杂货",
+      "children": [
+        {
+          "id": "fresh_food",
+          "name_en": "Fresh Food",
+          "name_zh": "生鲜食品",
+          "children": [
+            {
+              "id": "fruits_vegetables",
+              "name_en": "Fruits Vegetables",
+              "name_zh": "水果/蔬菜"
+            },
+            {
+              "id": "meat_seafood",
+              "name_en": "Meat Seafood",
+              "name_zh": "肉类/海鲜"
+            },
+            {
+              "id": "dairy_eggs",
+              "name_en": "Dairy Eggs",
+              "name_zh": "乳制品/蛋类"
+            }
+          ]
+        },
+        {
+          "id": "pantry_staples",
+          "name_en": "Pantry Staples",
+          "name_zh": "主食杂粮",
+          "children": [
+            {
+              "id": "rice_grains",
+              "name_en": "Rice",
+              "name_zh": "米/谷物"
+            },
+            {
+              "id": "cooking_oils",
+              "name_en": "Cooking Oils",
+              "name_zh": "食用油"
+            },
+            {
+              "id": "flour_sugar",
+              "name_en": "Flour Sugar",
+              "name_zh": "面粉/糖"
+            },
+            {
+              "id": "spices_seasonings",
+              "name_en": "Spices Seasonings",
+              "name_zh": "香料/调味品"
+            }
+          ]
+        },
+        {
+          "id": "snacks_beverages",
+          "name_en": "Snacks & Beverages",
+          "name_zh": "零食/饮料",
+          "children": [
+            {
+              "id": "snacks",
+              "name_en": "Snacks",
+              "name_zh": "零食"
+            },
+            {
+              "id": "soft_drinks",
+              "name_en": "Soft Drinks",
+              "name_zh": "软饮料"
+            },
+            {
+              "id": "juices",
+              "name_en": "Juices",
+              "name_zh": "果汁"
+            },
+            {
+              "id": "coffee_tea",
+              "name_en": "Tea Coffee",
+              "name_zh": "咖啡/茶"
+            }
+          ]
+        },
+        {
+          "id": "health_wellness",
+          "name_en": "Health & Nutrition",
+          "name_zh": "健康保健",
+          "children": [
+            {
+              "id": "vitamins_supplements",
+              "name_en": "Vitamins and Dietary Supplements",
+              "name_zh": "维生素/补充剂"
+            },
+            {
+              "id": "medical_supplies",
+              "name_en": "Medical Supplies and Equipment",
+              "name_zh": "医疗用品"
+            },
+            {
+              "id": "fitness_nutrition",
+              "name_en": "Sports Nutrition",
+              "name_zh": "健身营养"
+            }
+          ]
+        },
+        {
+          "id": "household_supplies",
+          "name_en": "Household Supplies",
+          "name_zh": "家居用品",
+          "children": [
+            {
+              "id": "cleaning_supplies",
+              "name_en": "Cleaning Supplies",
+              "name_zh": "清洁用品"
+            },
+            {
+              "id": "laundry_supplies",
+              "name_en": "Laundry Care",
+              "name_zh": "洗衣用品"
+            },
+            {
+              "id": "paper_products",
+              "name_en": "Paper Plastic Wraps",
+              "name_zh": "纸制品"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pets",
+      "name_en": "Pet Supplies",
+      "name_zh": "宠物用品",
+      "children": [
+        {
+          "id": "dog_supplies",
+          "name_en": "Dog Supplies",
+          "name_zh": "狗狗用品",
+          "children": [
+            {
+              "id": "dog_food",
+              "name_en": "Dog Food",
+              "name_zh": "狗粮"
+            },
+            {
+              "id": "dog_toys",
+              "name_en": "Dog Toys",
+              "name_zh": "狗狗玩具"
+            },
+            {
+              "id": "dog_beds",
+              "name_en": "Pet Orthopaedic Beds",
+              "name_zh": "狗狗床"
+            },
+            {
+              "id": "dog_collars",
+              "name_en": "Dog Collars Harnesses and Leashes",
+              "name_zh": "项圈/牵引绳"
+            }
+          ]
+        },
+        {
+          "id": "cat_supplies",
+          "name_en": "Cat Supplies",
+          "name_zh": "猫咪用品",
+          "children": [
+            {
+              "id": "cat_food",
+              "name_en": "Cat Food",
+              "name_zh": "猫粮"
+            },
+            {
+              "id": "cat_toys",
+              "name_en": "Cat Toys",
+              "name_zh": "猫咪玩具"
+            },
+            {
+              "id": "cat_beds",
+              "name_en": "Cat Beds",
+              "name_zh": "猫咪床"
+            },
+            {
+              "id": "cat_litter",
+              "name_en": "Cat Health Supplies",
+              "name_zh": "猫砂/用品"
+            }
+          ]
+        },
+        {
+          "id": "bird_supplies",
+          "name_en": "Housing & Bedding",
+          "name_zh": "鸟类用品",
+          "children": [
+            {
+              "id": "bird_food",
+              "name_en": "Pet Supplies",
+              "name_zh": "鸟粮"
+            },
+            {
+              "id": "bird_cages",
+              "name_en": "Pet Cages",
+              "name_zh": "鸟笼"
+            },
+            {
+              "id": "bird_toys",
+              "name_en": "Bird Toys",
+              "name_zh": "鸟类玩具"
+            }
+          ]
+        },
+        {
+          "id": "fish_aquatics",
+          "name_en": "Fish & Aquatic Pets",
+          "name_zh": "鱼/水族",
+          "children": [
+            {
+              "id": "fish_food",
+              "name_en": "Fish Food",
+              "name_zh": "鱼粮"
+            },
+            {
+              "id": "aquariums",
+              "name_en": "Aquariums",
+              "name_zh": "鱼缸"
+            },
+            {
+              "id": "aquarium_accessories",
+              "name_en": "Aquarium Accessories",
+              "name_zh": "水族配件"
+            }
+          ]
+        },
+        {
+          "id": "pet_grooming",
+          "name_en": "Pet Grooming",
+          "name_zh": "宠物美容",
+          "children": [
+            {
+              "id": "pet_shampoos",
+              "name_en": "Pet Shampoos",
+              "name_zh": "宠物洗发水"
+            },
+            {
+              "id": "pet_brushes",
+              "name_en": "Pet Brushes",
+              "name_zh": "宠物梳子"
+            },
+            {
+              "id": "pet_clippers",
+              "name_en": "Pet Grooming",
+              "name_zh": "宠物电推剪"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "office",
+      "name_en": "Office & Stationery",
+      "name_zh": "办公/文具",
+      "children": [
+        {
+          "id": "office_electronics",
+          "name_en": "Office Electronics",
+          "name_zh": "办公设备",
+          "children": [
+            {
+              "id": "printers_scanners",
+              "name_en": "Printers and Scanners",
+              "name_zh": "打印机/扫描仪"
+            },
+            {
+              "id": "calculators",
+              "name_en": "Calculators",
+              "name_zh": "计算器"
+            },
+            {
+              "id": "projectors",
+              "name_en": "Projectors",
+              "name_zh": "投影仪"
+            },
+            {
+              "id": "laminators",
+              "name_en": "Laminators",
+              "name_zh": "过塑机"
+            }
+          ]
+        },
+        {
+          "id": "office_supplies",
+          "name_en": "Office Supplies",
+          "name_zh": "办公用品",
+          "children": [
+            {
+              "id": "pens_pencils",
+              "name_en": "Pens and Pencils",
+              "name_zh": "笔类"
+            },
+            {
+              "id": "notebooks",
+              "name_en": "Notebooks & Pads",
+              "name_zh": "笔记本/便签"
+            },
+            {
+              "id": "paper",
+              "name_en": "Paper",
+              "name_zh": "纸张"
+            },
+            {
+              "id": "files_folders",
+              "name_en": "Folders",
+              "name_zh": "文件夹"
+            }
+          ]
+        },
+        {
+          "id": "desk_accessories",
+          "name_en": "Desk Accessories",
+          "name_zh": "桌面用品",
+          "children": [
+            {
+              "id": "desk_organizers",
+              "name_en": "Desk Accessories and Workspace Organizers",
+              "name_zh": "桌面收纳"
+            },
+            {
+              "id": "staplers",
+              "name_en": "Staplers & Punches",
+              "name_zh": "订书机/打孔器"
+            },
+            {
+              "id": "tape dispensers",
+              "name_en": "Office Tape Dispensers",
+              "name_zh": "胶带座"
+            }
+          ]
+        },
+        {
+          "id": "art_crafts",
+          "name_en": "Art & Crafts",
+          "name_zh": "艺术/手工",
+          "children": [
+            {
+              "id": "painting_supplies",
+              "name_en": "Paints and Finishes",
+              "name_zh": "绘画用品"
+            },
+            {
+              "id": "craft_supplies",
+              "name_en": "Arts and Crafts Supplies",
+              "name_zh": "手工用品"
+            },
+            {
+              "id": "calligraphy",
+              "name_en": "Calligraphy Pens",
+              "name_zh": "书法用品"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "name_en": "Tools & Home Improvement",
+      "name_zh": "工具/家装",
+      "children": [
+        {
+          "id": "power_tools",
+          "name_en": "Power Tools",
+          "name_zh": "电动工具",
+          "children": [
+            {
+              "id": "drills",
+              "name_en": "Drills",
+              "name_zh": "电钻"
+            },
+            {
+              "id": "saws",
+              "name_en": "Saws",
+              "name_zh": "电锯"
+            },
+            {
+              "id": "grinders",
+              "name_en": "Grinders",
+              "name_zh": "角磨机"
+            },
+            {
+              "id": "sanders",
+              "name_en": "Sanders",
+              "name_zh": "砂光机"
+            }
+          ]
+        },
+        {
+          "id": "hand_tools",
+          "name_en": "Hand Tools",
+          "name_zh": "手动工具",
+          "children": [
+            {
+              "id": "screwdrivers",
+              "name_en": "Screwdrivers",
+              "name_zh": "螺丝刀"
+            },
+            {
+              "id": "hammers",
+              "name_en": "Hammers",
+              "name_zh": "锤子"
+            },
+            {
+              "id": "wrenches",
+              "name_en": "Wrenches",
+              "name_zh": "扳手"
+            },
+            {
+              "id": "pliers",
+              "name_en": "Pliers",
+              "name_zh": "钳子"
+            }
+          ]
+        },
+        {
+          "id": "hardware",
+          "name_en": "Hardware",
+          "name_zh": "五金配件",
+          "children": [
+            {
+              "id": "screws_bolts",
+              "name_en": "Nails Screws and Fasteners",
+              "name_zh": "螺丝/螺栓"
+            },
+            {
+              "id": "hinges_locks",
+              "name_en": "Door Hardware and Locks",
+              "name_zh": "铰链/锁具"
+            },
+            {
+              "id": "nails",
+              "name_en": "Nails",
+              "name_zh": "钉子"
+            }
+          ]
+        },
+        {
+          "id": "electrical",
+          "name_en": "Electrical",
+          "name_zh": "电工器材",
+          "children": [
+            {
+              "id": "wires_cables",
+              "name_en": "Electrical Wire",
+              "name_zh": "电线/电缆"
+            },
+            {
+              "id": "switches_sockets",
+              "name_en": "Outlets and Accessories",
+              "name_zh": "开关/插座"
+            },
+            {
+              "id": "light_bulbs",
+              "name_en": "Light Bulbs",
+              "name_zh": "灯泡"
+            }
+          ]
+        },
+        {
+          "id": "plumbing",
+          "name_en": "Plumbing",
+          "name_zh": "水暖器材",
+          "children": [
+            {
+              "id": "pipes_fittings",
+              "name_en": "Pipes Pipe Fittings and Accessories",
+              "name_zh": "管道/配件"
+            },
+            {
+              "id": "faucets",
+              "name_en": "Faucets",
+              "name_zh": "水龙头"
+            },
+            {
+              "id": "plumbing_tools",
+              "name_en": "Plumbing Tools",
+              "name_zh": "水暖工具"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "garden",
+      "name_en": "Garden & Outdoor",
+      "name_zh": "花园/户外",
+      "children": [
+        {
+          "id": "gardening_tools",
+          "name_en": "Watering & Irrigation",
+          "name_zh": "园艺工具",
+          "children": [
+            {
+              "id": "shovels",
+              "name_en": "Shovels",
+              "name_zh": "铲子"
+            },
+            {
+              "id": "rakes",
+              "name_en": "Rakes",
+              "name_zh": "耙子"
+            },
+            {
+              "id": "pruning_tools",
+              "name_en": "Pruning Tools",
+              "name_zh": "修剪工具"
+            },
+            {
+              "id": "watering_equipment",
+              "name_en": "Watering Equipment",
+              "name_zh": "浇水设备"
+            }
+          ]
+        },
+        {
+          "id": "plants_seeds",
+          "name_en": "Plants Seeds",
+          "name_zh": "植物/种子",
+          "children": [
+            {
+              "id": "indoor_plants",
+              "name_en": "Indoor Plants",
+              "name_zh": "室内植物"
+            },
+            {
+              "id": "outdoor_plants",
+              "name_en": "Outdoor Plants",
+              "name_zh": "户外植物"
+            },
+            {
+              "id": "seeds",
+              "name_en": "Seeds",
+              "name_zh": "种子"
+            },
+            {
+              "id": "pots_planters",
+              "name_en": "Pots Planters and Container Accessories",
+              "name_zh": "花盆/种植箱"
+            }
+          ]
+        },
+        {
+          "id": "outdoor_furniture",
+          "name_en": "Outdoor Furniture",
+          "name_zh": "户外家具",
+          "children": [
+            {
+              "id": "patio_sets",
+              "name_en": "Patio Conversation Sets",
+              "name_zh": "庭院套装"
+            },
+            {
+              "id": "garden_benches",
+              "name_en": "Garden Benches",
+              "name_zh": "花园长椅"
+            },
+            {
+              "id": "outdoor_tables",
+              "name_en": "Outdoor Tables",
+              "name_zh": "户外桌子"
+            }
+          ]
+        },
+        {
+          "id": "bbq_grills",
+          "name_en": "Bbq Grills",
+          "name_zh": "烧烤/烤架",
+          "children": [
+            {
+              "id": "grills",
+              "name_en": "Barbeque Grills",
+              "name_zh": "烤架"
+            },
+            {
+              "id": "bbq_tools",
+              "name_en": "Barbeque Tools Accessories",
+              "name_zh": "烧烤工具"
+            },
+            {
+              "id": "charcoal_accessories",
+              "name_en": "Charcoal Fuel and Firestarters",
+              "name_zh": "木炭/配件"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

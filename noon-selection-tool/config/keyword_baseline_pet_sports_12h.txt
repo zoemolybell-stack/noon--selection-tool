@@ -1,0 +1,120 @@
+# pet supplies
+pet supplies
+pet accessories
+dog food
+dry dog food
+wet dog food
+cat food
+dry cat food
+wet cat food
+dog treats
+cat treats
+cat litter
+clumping cat litter
+cat litter box
+self cleaning litter box
+cat tree
+cat scratching post
+cat tunnel
+pet bed
+dog bed
+cat bed
+dog toys
+puppy toys
+chew toys for dogs
+dog rope toy
+cat toys
+cat wand toy
+pet carrier
+cat backpack carrier
+pet travel bag
+dog crate
+dog kennel
+dog leash
+retractable leash
+dog harness
+dog collar
+pet bowl
+slow feeder bowl
+automatic pet feeder
+pet water fountain
+pet grooming kit
+dog shampoo
+cat shampoo
+pet wipes
+puppy pads
+dog poop bags
+pet cooling mat
+pet hair remover
+dog brush
+pet nail clipper
+pet toothpaste
+aquarium filter
+fish tank accessories
+fish tank light
+bird cage
+bird toys
+hamster cage
+rabbit cage
+reptile terrarium
+dog training pads
+
+# sports and outdoor
+sports equipment
+outdoor gear
+camping tent
+camping chair
+camping table
+sleeping bag
+camping lantern
+portable stove
+camping cookware
+cooler box
+picnic mat
+picnic basket
+hiking backpack
+trekking poles
+hiking shoes
+hydration backpack
+water bottle
+sports water bottle
+insulated tumbler
+travel mug
+cycling helmet
+cycling gloves
+bike accessories
+bicycle lights
+bicycle pump
+cycling bag
+fishing rod
+fishing reel
+tackle box
+yoga mat
+yoga block
+resistance bands
+pull up resistance band
+dumbbells
+dumbbell set
+kettlebell
+exercise bike
+treadmill
+rowing machine
+pull up bar
+adjustable bench
+ankle weights
+skipping rope
+foam roller
+gym bag
+running belt
+football
+soccer ball
+basketball
+volleyball
+badminton racket
+tennis racket
+padel racket
+swim goggles
+snorkel set
+beach tent
+outdoor flashlight
+folding chair

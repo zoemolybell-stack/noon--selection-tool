@@ -1,0 +1,71 @@
+name: ${COMPOSE_PROJECT_NAME:-huihaokang-category-node}
+
+services:
+  nas-db-tunnel:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: huihaokang-remote-category-db-tunnel
+    env_file:
+      - .env.category-node
+    command:
+      - /bin/sh
+      - -lc
+      - 'mkdir -p /tmp/ssh && cp "${NOON_REMOTE_ARTIFACT_SSH_IDENTITY_FILE:-/root/.ssh/id_ed25519}" /tmp/ssh/id_ed25519 && chmod 600 /tmp/ssh/id_ed25519 && touch /tmp/ssh/known_hosts && while true; do ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/tmp/ssh/known_hosts -i /tmp/ssh/id_ed25519 -L 0.0.0.0:55432:127.0.0.1:55432 -p "${NOON_REMOTE_ARTIFACT_SSH_PORT:-22}" "${NOON_REMOTE_ARTIFACT_SSH_USER}@${NOON_REMOTE_ARTIFACT_SSH_HOST}"; sleep 5; done'
+    volumes:
+      - ${NOON_HOST_SSH_DIR:-./ssh}:/root/.ssh:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python -c "import socket; s=socket.create_connection(('127.0.0.1', 55432), 2); s.close()"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+
+  category-worker:
+    image: huihaokang-app:${HUIHAOKANG_IMAGE_TAG:-stable}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: huihaokang-remote-category-worker
+    env_file:
+      - .env.category-node
+    depends_on:
+      nas-db-tunnel:
+        condition: service_healthy
+    environment:
+      NOON_RUNTIME_SCOPE: category
+      NOON_WORKER_TYPE: category
+      NOON_CATEGORY_WAREHOUSE_SYNC_MODE: ${NOON_CATEGORY_WAREHOUSE_SYNC_MODE:-enqueue_shared}
+      NOON_REMOTE_CATEGORY_NODE_ENABLED: "true"
+      NOON_WORKER_NODE_ROLE: remote_category
+      NOON_WORKER_NODE_HOST: ${NOON_WORKER_NODE_HOST:-local-category-node}
+      NOON_BROWSER_EXECUTABLE_PATH: /usr/bin/chromium
+      NOON_BROWSER_CDP_ENDPOINT: ${NOON_BROWSER_CDP_ENDPOINT:-}
+      NOON_CATEGORY_WARMUP_URL: ${NOON_CATEGORY_WARMUP_URL:-}
+      NOON_OPS_DATABASE_URL: ${NOON_OPS_DATABASE_URL}
+      NOON_PRODUCT_STORE_DATABASE_URL: ${NOON_PRODUCT_STORE_DATABASE_URL}
+      NOON_WAREHOUSE_DATABASE_URL: ${NOON_WAREHOUSE_DATABASE_URL}
+      NOON_BROWSER_HEADLESS: "true"
+      NOON_BROWSER_PROFILE_ROOT: /app/browser_profiles/category
+      NOON_CATEGORY_ARTIFACT_SYNC_MODE: ${NOON_CATEGORY_ARTIFACT_SYNC_MODE:-ssh_push}
+      NOON_REMOTE_ARTIFACT_SSH_HOST: ${NOON_REMOTE_ARTIFACT_SSH_HOST:-}
+      NOON_REMOTE_ARTIFACT_SSH_PORT: ${NOON_REMOTE_ARTIFACT_SSH_PORT:-22}
+      NOON_REMOTE_ARTIFACT_SSH_USER: ${NOON_REMOTE_ARTIFACT_SSH_USER:-}
+      NOON_REMOTE_ARTIFACT_SSH_IDENTITY_FILE: ${NOON_REMOTE_ARTIFACT_SSH_IDENTITY_FILE:-}
+      NOON_REMOTE_CATEGORY_BATCH_ROOT: ${NOON_REMOTE_CATEGORY_BATCH_ROOT:-/volume1/docker/huihaokang-erp/shared/data/batch_scans}
+    command: python run_task_scheduler.py --mode worker --worker-type category --poll-seconds 10
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${NOON_HOST_DATA_DIR:-./data}:/app/data
+      - ${NOON_HOST_RUNTIME_DATA_DIR:-./runtime_data}:/app/runtime_data
+      - ${NOON_HOST_BROWSER_PROFILES_DIR:-./browser_profiles}:/app/browser_profiles
+      - ${NOON_HOST_LOGS_DIR:-./logs}:/app/logs
+      - ${NOON_HOST_SSH_DIR:-./ssh}:/root/.ssh:ro
+    restart: unless-stopped

@@ -1,0 +1,23 @@
+{
+  "baseline_file": "config/keyword_baseline_pet_sports_12h.txt",
+  "tracked_priority": 20,
+  "expand_limit": 100,
+  "expand_stale_hours": 12,
+  "expand_source_types": [
+    "baseline",
+    "manual",
+    "generated",
+    "tracked"
+  ],
+  "expand_platforms": [
+    "noon",
+    "amazon"
+  ],
+  "crawl_platforms": [
+    "noon",
+    "amazon"
+  ],
+  "crawl_stale_hours": 0,
+  "crawl_limit": 4000,
+  "monitor_report": false
+}

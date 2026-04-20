@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Huihaokang NAS watchdog every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+Persistent=true
+AccuracySec=1min
+Unit=huihaokang-nas-watchdog.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,1011 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>会好康 ERP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/app.css?v=ui-v3-workbench-r46" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="primary-shell" id="primary-shell">
+      <div class="primary-shell-inner">
+        <div class="brand-lockup">
+          <div class="brand-mark">康</div>
+          <div class="brand-copy">
+            <div class="brand-title">会好康 ERP</div>
+            <div class="brand-subtitle">Seller Research Console</div>
+          </div>
+        </div>
+
+        <nav class="top-nav" id="primary-nav">
+          <button class="nav-item" data-view="home">
+            <span class="nav-main">研究首页</span>
+            <span class="nav-sub">Home</span>
+          </button>
+          <button class="nav-item" data-view="selection">
+            <span class="nav-main">选品</span>
+            <span class="nav-sub">Selection</span>
+          </button>
+          <button class="nav-item" data-view="favorites">
+            <span class="nav-main">收藏夹</span>
+            <span class="nav-sub">Favorites</span>
+          </button>
+          <button class="nav-item" data-view="keyword">
+            <span class="nav-main">关键词研究</span>
+            <span class="nav-sub">Keywords</span>
+          </button>
+          <button class="nav-item admin-only" data-view="crawler">
+            <span class="nav-main">爬虫控制台</span>
+            <span class="nav-sub">Crawler</span>
+          </button>
+          <button class="nav-item" data-view="runs">
+            <span class="nav-main">运行中心</span>
+            <span class="nav-sub">Admin</span>
+          </button>
+        </nav>
+
+        <div class="header-utility">
+          <div class="header-health">
+            <span class="health-chip state-neutral" id="header-freshness">Freshness 加载中</span>
+            <span class="health-chip env-chip" id="header-environment">环境识别中</span>
+            <span class="health-chip build-chip" id="header-build">UI build --</span>
+            <span class="header-context" id="workspace-context-inline">正在同步当前工作区上下文</span>
+          </div>
+          <div class="button-row header-actions">
+            <button type="button" id="save-view" class="ghost-button">保存视图</button>
+            <button type="button" id="export-slice" class="ghost-button">导出当前切片</button>
+            <label class="role-switch">
+              <span class="field-label">角色</span>
+              <select id="beta-role">
+                <option value="operator">operator</option>
+                <option value="admin">admin</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <section class="workspace-subnav" id="workspace-subnav">
+      <div class="workspace-subnav-mainline">
+        <div class="workspace-subnav-context">
+          <p class="eyebrow" id="workspace-eyebrow">Research Home</p>
+          <div class="workspace-title-row">
+            <h1 id="workspace-title">研究首页</h1>
+            <p id="workspace-description">全局趋势、研究入口与异常摘要。</p>
+          </div>
+        </div>
+        <div id="secondary-nav-view-controls" class="subnav-inline-context"></div>
+      </div>
+
+    </section>
+
+    <main class="main-shell">
+      <section class="workspace workspace-home active" id="view-home">
+        <div class="home-kpi-strip" id="dashboard-kpis"></div>
+
+        <article class="panel dashboard-trend-panel">
+          <div class="panel-head compact-head">
+            <div>
+                    <h2>30 天导入趋势</h2>
+            </div>
+          </div>
+          <div class="dashboard-trend-grid">
+            <div class="soft-panel dashboard-chart-card">
+              <div class="subsection-title">类目导入</div>
+              <div id="dashboard-category-import-chart" class="chart hero-chart"></div>
+            </div>
+            <div class="soft-panel dashboard-chart-card">
+              <div class="subsection-title">关键词导入</div>
+              <div id="dashboard-keyword-import-chart" class="chart hero-chart"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel dashboard-scope-panel">
+          <div class="panel-head compact-head">
+            <div>
+                <h2>类目数据驾驶舱</h2>
+            </div>
+            <div class="button-row dashboard-scope-actions">
+              <div id="dashboard-home-scope-current" class="workspace-chip-stack"></div>
+              <button type="button" class="ghost-button" id="dashboard-home-scope-open" data-action="open-category-selector" data-context="home" data-mode="multi">选择类目</button>
+              <button type="button" class="ghost-button" id="dashboard-home-scope-clear" data-action="clear-home-scope">回到大盘</button>
+            </div>
+          </div>
+          <div class="sub-meta" id="dashboard-scope-meta">默认显示全平台大盘。</div>
+          <div id="dashboard-scope-cards" class="fact-grid dashboard-scope-cards"></div>
+
+          <div class="dashboard-scope-chart-grid">
+            <article class="soft-panel dashboard-chart-card">
+                <div class="subsection-title">价格带分布</div>
+              <div id="dashboard-price-band-chart" class="chart compact-chart"></div>
+            </article>
+            <article class="soft-panel dashboard-chart-card">
+                <div class="subsection-title">配送结构</div>
+              <div id="dashboard-delivery-mix-chart" class="chart compact-chart"></div>
+            </article>
+            <article class="soft-panel dashboard-chart-card">
+                <div class="subsection-title">广告 / Organic 结构</div>
+              <div id="dashboard-ad-structure-chart" class="chart compact-chart"></div>
+            </article>
+            <article class="soft-panel dashboard-chart-card">
+                <div class="subsection-title">信号覆盖结构</div>
+              <div id="dashboard-signal-coverage-chart" class="chart compact-chart"></div>
+            </article>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>类目</th>
+                  <th>商品数</th>
+                  <th>Express 占比</th>
+                  <th>广告占比</th>
+                  <th>均价</th>
+                  <th>BSR 覆盖</th>
+                  <th>信号覆盖</th>
+                  <th>最近采集</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-category-table-body"></tbody>
+            </table>
+          </div>
+          <div class="sub-meta" id="dashboard-category-table-meta">按当前范围展示类目表现。</div>
+        </article>
+      </section>
+
+      
+      <div class="selector-modal" id="category-selector-modal" hidden>
+        <div class="selector-backdrop" data-action="close-category-selector"></div>
+        <div class="selector-dialog" role="dialog" aria-modal="true" aria-labelledby="category-selector-title">
+          <div class="selector-head">
+            <div>
+              <div class="eyebrow">Category Selector</div>
+              <h2 id="category-selector-title">选择类目</h2>
+              <p>支持单选和多选。先定位类目路径，再把结果应用到首页或选品工作台。</p>
+            </div>
+            <button type="button" class="ghost-button" data-action="close-category-selector">关闭</button>
+          </div>
+          <div class="selector-search-row">
+            <label class="field">
+              <span class="field-label">类目搜索</span>
+              <input id="category-selector-search" type="search" placeholder="搜索类目路径或名称" />
+            </label>
+            <div class="selector-mode-switch" id="category-selector-mode-switch" aria-label="类目选择模式">
+              <button type="button" class="mini-button subtle active" data-action="set-category-selector-mode" data-mode="multi">多选</button>
+              <button type="button" class="mini-button subtle" data-action="set-category-selector-mode" data-mode="single">单选</button>
+            </div>
+          </div>
+          <div class="selector-grid">
+            <div class="selector-tree-panel">
+              <div id="category-tree" class="tree-list selector-tree-list"></div>
+            </div>
+            <div class="selector-summary-panel">
+              <div class="detail-card">
+                <div class="detail-label">当前已选</div>
+                <div class="detail-value selector-current-value" id="category-selector-current">未选择类目</div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">使用方式</div>
+                <div class="detail-value">搜索时会临时展开命中路径；确认后将所选类目作为首页 scope 或选品筛选条件。</div>
+              </div>
+            </div>
+          </div>
+          <div class="selector-actions">
+            <button type="button" class="ghost-button" id="category-selector-clear">清空</button>
+            <div class="button-row">
+              <button type="button" class="ghost-button" data-action="close-category-selector">取消</button>
+              <button type="button" class="primary-button" id="category-selector-confirm">确认类目</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="selector-modal crawler-keyword-manager-modal" id="crawler-keyword-manager-modal" hidden>
+        <div class="selector-backdrop" data-action="close-crawler-keyword-manager"></div>
+        <div class="selector-dialog crawler-keyword-manager-dialog" role="dialog" aria-modal="true" aria-labelledby="crawler-keyword-manager-title">
+          <div class="selector-head crawler-keyword-manager-head">
+            <div>
+              <div class="eyebrow">Keyword Manager</div>
+              <h2 id="crawler-keyword-manager-title">监控关键词管理器</h2>
+              <p>围绕当前 Monitor Config 维护长期种子、禁用词与 blocked roots，不离开 crawler 控制台。</p>
+            </div>
+            <div class="button-row">
+              <button type="button" class="ghost-button" data-action="refresh-crawler-keyword-controls">刷新数据</button>
+              <button type="button" class="ghost-button" data-action="close-crawler-keyword-manager">关闭</button>
+            </div>
+          </div>
+          <div class="crawler-keyword-manager-toolbar">
+            <label class="field crawler-keyword-manager-search-field">
+              <span class="field-label">搜索关键词 / Search</span>
+              <input id="crawler-keyword-manager-search" type="search" placeholder="搜索 keyword、reason、source scope" />
+            </label>
+            <label class="field crawler-keyword-manager-filter-field">
+              <span class="field-label">来源过滤</span>
+              <select id="crawler-keyword-manager-source-filter">
+                <option value="">全部来源</option>
+              </select>
+            </label>
+            <label class="field crawler-keyword-manager-filter-field">
+              <span class="field-label">Tracking Mode</span>
+              <select id="crawler-keyword-manager-tracking-filter">
+                <option value="">全部 tracking mode</option>
+              </select>
+            </label>
+            <div class="tabbar crawler-keyword-manager-tabbar" id="crawler-keyword-manager-tabs" aria-label="关键词管理标签"></div>
+          </div>
+          <div id="crawler-keyword-manager-message" class="crawler-control-message">请选择 Monitor Config。</div>
+          <div id="crawler-keyword-manager-kpis" class="crawler-keyword-manager-kpis"></div>
+          <div class="crawler-keyword-manager-body">
+            <div class="crawler-keyword-manager-main">
+              <div id="crawler-keyword-manager-selection-bar" class="crawler-keyword-manager-selection-bar"></div>
+              <div id="crawler-keyword-manager-content" class="crawler-keyword-manager-content"></div>
+            </div>
+            <aside class="crawler-keyword-manager-side">
+              <div class="detail-card crawler-keyword-side-card">
+                <div class="detail-label">当前 Monitor Config</div>
+                <div class="detail-value" id="crawler-keyword-manager-config-label">-</div>
+                <div class="detail-caption" id="crawler-keyword-manager-config-meta">选择监控配置后查看长期种子与规则覆盖。</div>
+              </div>
+              <div class="detail-card crawler-keyword-side-card">
+                <div class="detail-label">禁用范围 / Source Scope</div>
+                <div class="detail-caption">勾选要被规则拦截的来源。用于“批量禁用”和“加入 Blocked Roots”。</div>
+                <div id="crawler-keyword-source-scope-chips" class="chip-row"></div>
+              </div>
+              <div class="detail-card crawler-keyword-side-card">
+                <div class="detail-label">操作原因 / Reason</div>
+                <div class="detail-caption">写给未来的 operator，帮助区分手工清理、策略禁用和 root rule。</div>
+                <label class="field">
+                  <span class="field-label">说明备注</span>
+                  <input id="crawler-keyword-control-reason" type="text" placeholder="manual cleanup / source alignment / root rule" />
+                </label>
+                <div class="sub-meta" id="crawler-keyword-manager-selection-summary">未选择关键词。</div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <section class="workspace workspace-selection" id="view-selection">
+        <div class="workspace-body selection-shell">
+          <div class="workspace-main selection-main">
+            <div id="products-filters" class="workspace-toolbar"></div>
+
+            <article class="panel selection-summary-panel selection-summary-ribbon" id="selection-summary-strip">
+              <p id="selection-summary-meta">当前未限定类目。先看表，再决定是否收窄到特定类目。</p>
+              <div id="selection-summary-cards" class="fact-grid compact-fact-grid"></div>
+            </article>
+
+            
+            <article class="panel products-table-panel" id="selection-products-panel">
+              <div class="panel-head compact-head">
+                <div>
+                  <h2>商品表</h2>
+                  <p id="products-meta">按销量、评论、库存和配送结构筛出值得继续研究的商品。</p>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table product-table selection-product-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>价格</th>
+                      <th>销量</th>
+                      <th>库存</th>
+                      <th>BSR</th>
+                      <th>Reviews</th>
+                      <th>Rating</th>
+                      <th>Rating 增长</th>
+                      <th>配送</th>
+                      <th>广告</th>
+                      <th>最近采集</th>
+                    </tr>
+                  </thead>
+                  <tbody id="products-body"></tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <span id="products-pagination">-</span>
+                <div class="button-row">
+                  <button type="button" class="ghost-button" id="products-prev">上一页</button>
+                  <button type="button" class="ghost-button" id="products-next">下一页</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace workspace-keyword" id="view-keyword">
+        <div class="workspace-body keyword-shell">
+          <div class="workspace-main keyword-main">
+            <div id="keyword-workspace-toolbar" class="workspace-toolbar"></div>
+
+            <section class="keyword-pool-workspace" id="keyword-pool-workspace">
+              <article class="panel keyword-pool-browser">
+                <div class="panel-head compact-head">
+                  <div>
+                    <h2>关键词池</h2>
+                    <p>先筛词、再分组浏览，最后进入右侧摘要和命中商品。</p>
+                  </div>
+                </div>
+                <label class="field keyword-pool-search">
+                  <span class="field-label">关键词搜索</span>
+                  <input id="keyword-pool-search" type="search" placeholder="keyword / root seed / display keyword" />
+                </label>
+                <div id="keyword-pool-tree" class="keyword-pool-tree"></div>
+              </article>
+              <article class="panel keyword-pool-brief-panel">
+                <div class="panel-head compact-head">
+                  <div>
+                    <h2>当前关键词摘要</h2>
+                    <p>右侧保持为判断面，不让关键词池长期占据主工作区。</p>
+                  </div>
+                </div>
+                <div id="keyword-pool-brief" class="detail-stack"></div>
+              </article>
+            </section>
+
+            <article class="panel keyword-answer-panel" id="keyword-answer-panel">
+              <div class="panel-head compact-head">
+                <div>
+                  <h2 id="keyword-headline">关键词答案区</h2>
+                  <p id="keyword-subtitle">选择关键词后查看趋势、机会和命中商品。</p>
+                </div>
+              </div>
+              <div id="keyword-cards" class="fact-grid"></div>
+            </article>
+            <div class="two-column-grid keyword-summary-grid" id="keyword-summary-grid">
+              <article class="panel">
+                <div class="panel-head compact-head">
+                  <div>
+                    <h2>趋势</h2>
+                    <p>查看关键词评分与竞争强度的时间走势。</p>
+                  </div>
+                </div>
+                <div id="keyword-trend-chart" class="chart compact-chart"></div>
+              </article>
+              <article class="panel">
+                <div class="panel-head compact-head">
+                  <div>
+                    <h2>关键词画像</h2>
+                    <p>保留 answer panel 的核心文字判断面。</p>
+                  </div>
+                </div>
+                <div id="keyword-profile" class="detail-stack"></div>
+              </article>
+            </div>
+
+            <section class="keyword-secondary-shell" id="keyword-secondary-shell" hidden>
+              <div class="three-column-grid compact-columns keyword-distribution-grid keyword-research-only" id="keyword-distribution-grid">
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>类目分布</h2>
+                      <p>命中商品的主类目分布。</p>
+                    </div>
+                  </div>
+                  <div id="keyword-category-chart" class="chart compact-chart"></div>
+                </article>
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>配送结构</h2>
+                      <p>命中商品的配送方式分布。</p>
+                    </div>
+                  </div>
+                  <div id="keyword-delivery-chart" class="chart compact-chart"></div>
+                </article>
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>机会快照</h2>
+                      <p>保留 demand / competition / margin 等短摘要。</p>
+                    </div>
+                  </div>
+                  <div id="keyword-snapshot" class="fact-grid mini-fact-grid"></div>
+                </article>
+              </div>
+
+              <div class="three-column-grid compact-columns keyword-research-only" id="keyword-insights-grid">
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>机会词</h2>
+                      <p>按优先级与证据强度筛选机会词。</p>
+                    </div>
+                    <div class="inline-actions">
+                      <select id="keyword-opportunity-priority">
+                        <option value="">全部优先级</option>
+                        <option value="critical">critical</option>
+                        <option value="high">high</option>
+                        <option value="medium">medium</option>
+                      </select>
+                      <select id="keyword-opportunity-evidence">
+                        <option value="">全部证据强度</option>
+                        <option value="strong">strong</option>
+                        <option value="medium">medium</option>
+                        <option value="light">light</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="sub-meta" id="keyword-opportunity-meta">加载中...</div>
+                  <div id="keyword-opportunity-list" class="list-block"></div>
+                </article>
+
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>质量问题</h2>
+                      <p>优先暴露高风险和质量问题关键词。</p>
+                    </div>
+                  </div>
+                  <div class="sub-meta" id="keyword-quality-meta">加载中...</div>
+                  <div id="keyword-quality-issues" class="list-block"></div>
+                </article>
+
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>Seed Groups</h2>
+                      <p>查看当前 root seed 下 tracked keyword 的覆盖情况。</p>
+                    </div>
+                  </div>
+                  <div id="keyword-seed-groups" class="list-block"></div>
+                </article>
+              </div>
+
+              <div class="two-column-grid keyword-research-only" id="keyword-secondary-grid">
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>扩词图谱</h2>
+                      <p>图谱只作为次级判断，不压过主商品表。</p>
+                    </div>
+                  </div>
+                  <div class="sub-meta" id="keyword-graph-meta">暂无图谱数据</div>
+                  <div id="keyword-graph-chart" class="chart tall-chart"></div>
+                </article>
+
+                <article class="panel">
+                  <div class="panel-head compact-head">
+                    <div>
+                      <h2>运行片段</h2>
+                      <p>保留近期关键词运行记录作为辅助判断。</p>
+                    </div>
+                  </div>
+                  <div id="keyword-runs-list" class="list-block"></div>
+                </article>
+              </div>
+            </section>
+
+            <article class="panel" id="keyword-products-panel">
+              <div class="panel-head compact-head">
+                <div>
+                  <h2>命中商品</h2>
+                  <p>用与选品页一致的方式继续筛当前关键词命中的商品。</p>
+                </div>
+              </div>
+              <div id="keyword-product-filters"></div>
+              <div class="tabbar" id="keyword-tabbar"></div>
+              <div class="sub-meta" id="keyword-products-meta">选择关键词后加载商品结果。</div>
+              <div class="table-wrap">
+                <table class="data-table product-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>价格</th>
+                      <th>销量</th>
+                      <th>库存</th>
+                      <th>BSR</th>
+                      <th>Reviews</th>
+                      <th>Rating</th>
+                      <th>Rating 增长</th>
+                      <th>配送</th>
+                      <th>广告</th>
+                      <th>最近采集</th>
+                    </tr>
+                  </thead>
+                  <tbody id="keyword-products-body"></tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <span id="keyword-pagination">-</span>
+                <div class="button-row">
+                  <button type="button" class="ghost-button" id="keyword-prev">上一页</button>
+                  <button type="button" class="ghost-button" id="keyword-next">下一页</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace workspace-crawler" id="view-crawler">
+        <article class="panel crawler-overview-panel">
+          <div class="panel-head compact-head">
+            <div>
+              <h2>控制总览</h2>
+              <p>按计划、任务、同步状态和 worker 健康检查当前爬虫控制面。</p>
+            </div>
+          </div>
+          <div id="crawler-overview-cards" class="list-block ops-grid"></div>
+        </article>
+
+        <div class="crawler-grid">
+          <article class="panel crawler-quick-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>快速启动</h2>
+                <p>创建类目或关键词计划，并按需立即派发到底层任务。</p>
+              </div>
+            </div>
+            <div id="crawler-plan-message" class="empty-state">等待输入。</div>
+            <form id="crawler-plan-form" class="task-form crawler-plan-form">
+              <div class="filter-grid crawler-form-grid">
+                <label class="field">
+                  <span class="field-label">计划类型</span>
+                  <select id="crawler-plan-type">
+                    <option value="category_ready_scan">Ready Categories</option>
+                    <option value="category_single">Single Category</option>
+                    <option value="keyword_batch">Keyword Batch</option>
+                    <option value="keyword_monitor">Monitor Config</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">计划名称</span>
+                  <input id="crawler-plan-name" type="text" placeholder="宠物与运动夜间批扫" />
+                </label>
+                <label class="field">
+                  <span class="field-label">调度方式</span>
+                  <select id="crawler-schedule-kind">
+                    <option value="manual">manual</option>
+                    <option value="once">once</option>
+                    <option value="interval">interval</option>
+                    <option value="weekly">weekly</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">启用</span>
+                  <select id="crawler-enabled">
+                    <option value="true">On</option>
+                    <option value="false">Off</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">单类目目标子类目</span>
+                  <select id="crawler-category-target-subcategory">
+                    <option value="">Loading subcategories...</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="field-label">单类目备用路径</span>
+                  <input id="crawler-category-single" type="text" placeholder="sports > Fitness & Strength Training > Treadmills" />
+                </label>
+                <label class="field">
+                  <span class="field-label">批量类目</span>
+                  <textarea id="crawler-category-selected" rows="4" placeholder="sports&#10;baby&#10;pet supplies"></textarea>
+                </label>
+                <label class="field">
+                  <span class="field-label">默认深度</span>
+                  <input id="crawler-category-default-depth" type="number" min="1" step="1" value="50" />
+                </label>
+                <label class="field">
+                  <span class="field-label">类目覆盖深度</span>
+                  <textarea id="crawler-category-overrides" rows="4" placeholder="sports=120&#10;baby=80"></textarea>
+                </label>
+                <label class="field">
+                  <span class="field-label">关键词批量</span>
+                  <textarea id="crawler-keyword-batch" rows="5" placeholder="dog toys&#10;cat litter box&#10;walking pad"></textarea>
+                </label>
+                <label class="field">
+                  <span class="field-label">Monitor Config</span>
+                  <select id="crawler-monitor-config"></select>
+                </label>
+                <label class="field">
+                  <span class="field-label">平台</span>
+                  <input id="crawler-platforms" type="text" placeholder="noon,amazon" value="noon,amazon" />
+                </label>
+                <label class="field">
+                  <span class="field-label">Noon Count</span>
+                  <input id="crawler-noon-count" type="number" min="1" step="1" value="30" />
+                </label>
+                <label class="field">
+                  <span class="field-label">Amazon Count</span>
+                  <input id="crawler-amazon-count" type="number" min="1" step="1" value="30" />
+                </label>
+                <label class="field">
+                  <span class="field-label">指定时间</span>
+                  <input id="crawler-once-at" type="datetime-local" />
+                </label>
+                <label class="field">
+                  <span class="field-label">间隔小时</span>
+                  <input id="crawler-interval-hours" type="number" min="1" step="1" value="24" />
+                </label>
+                <label class="field">
+                  <span class="field-label">每周日期</span>
+                  <input id="crawler-weekly-days" type="text" placeholder="MO,TU,WE" value="MO,WE,FR" />
+                </label>
+                <label class="field">
+                  <span class="field-label">每周时间</span>
+                  <input id="crawler-weekly-time" type="time" value="09:00" />
+                </label>
+              </div>
+              <div class="button-row">
+                <button type="submit" class="primary-button" id="crawler-plan-submit">创建计划</button>
+                <button type="button" class="ghost-button" id="crawler-plan-launch-now">创建并立即执行</button>
+              </div>
+            </form>
+
+            <div class="crawler-control-stack">
+              <article class="detail-card crawler-control-panel" id="crawler-keyword-control-panel">
+                <div class="crawler-keyword-inline-shell">
+                  <div>
+                    <div class="detail-label">关键词管理器 / Keyword Manager</div>
+                    <div class="detail-caption">把长期种子、禁用词和 blocked roots 收敛到一个浮动管理器中，避免在表单区来回找操作。</div>
+                  </div>
+                  <div class="button-row">
+                    <button type="button" class="primary-button" id="crawler-keyword-manager-open" data-action="open-crawler-keyword-manager">打开管理器</button>
+                    <button type="button" class="ghost-button" data-action="refresh-crawler-keyword-controls">刷新</button>
+                  </div>
+                </div>
+                <div id="crawler-keyword-control-message" class="crawler-control-message">请选择 Monitor Config。</div>
+                <div id="crawler-keyword-manager-summary" class="crawler-keyword-summary-grid"></div>
+                <div class="sub-meta" id="crawler-keyword-manager-inline-meta">先切到 Keyword Monitor 计划类型，再选择 Monitor Config 打开管理器。</div>
+              </article>
+
+              <article class="detail-card crawler-control-panel" id="crawler-category-control-panel">
+                <div class="detail-label">类目控制 / Category Control</div>
+                <div class="detail-caption">单类目选择 target_subcategory，批量扫描按 config_id 维护子类目深度覆盖。</div>
+                <div id="crawler-category-control-message" class="crawler-control-message">请选择 Category 计划类型。</div>
+                <div class="crawler-control-grid">
+                  <div class="detail-card crawler-control-card">
+                    <div class="detail-label">Single Category Target</div>
+                    <div class="sub-meta">Use the selector in the quick form above for category_single. Fallback path stays as a plain text override.</div>
+                    <div class="sub-meta" id="crawler-category-single-summary">-</div>
+                  </div>
+
+                  <div class="detail-card crawler-control-card">
+                    <div class="detail-label">Ready Scan Subcategory Overrides</div>
+                    <label class="field">
+                      <span class="field-label">子类目 / Subcategory</span>
+                      <select id="crawler-category-subcategory-picker">
+                        <option value="">Loading subcategories...</option>
+                      </select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">深度 / Depth</span>
+                      <input id="crawler-category-subcategory-depth" type="number" min="1" step="1" value="100" />
+                    </label>
+                    <div class="button-row">
+                      <button type="button" class="primary-button" id="crawler-category-subcategory-add" data-action="add-crawler-category-subcategory-override">加入覆盖</button>
+                      <button type="button" class="ghost-button" id="crawler-category-subcategory-clear" data-action="clear-crawler-category-subcategory-override">清空覆盖</button>
+                    </div>
+                    <div class="sub-meta" id="crawler-category-subcategory-meta">-</div>
+                    <div id="crawler-category-subcategory-overrides-list" class="list-block"></div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </article>
+
+          <article class="panel crawler-plan-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>计划管理</h2>
+                <p>查看计划状态、下次执行时间以及启停控制。</p>
+              </div>
+            </div>
+            <div id="crawler-plan-list" class="list-block"></div>
+          </article>
+        </div>
+
+        <div class="crawler-grid">
+          <article class="panel crawler-run-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>运行监控</h2>
+                <p>固定展示 runtime collecting / stage persisted / warehouse syncing / web visible。</p>
+              </div>
+            </div>
+            <div id="crawler-run-list" class="list-block"></div>
+          </article>
+
+          <article class="panel crawler-history-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>历史结果</h2>
+                <p>查看最近完成、失败和取消的计划任务。</p>
+              </div>
+            </div>
+            <div id="crawler-history-list" class="list-block"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="workspace workspace-runs" id="view-runs">
+        <article class="panel ops-overview-panel">
+          <div class="panel-head compact-head">
+            <div>
+              <h2>运行真相</h2>
+              <p>先看 freshness、shared sync、失败和队列，再看次级活动。</p>
+            </div>
+          </div>
+          <div id="runs-health" class="list-block ops-grid"></div>
+        </article>
+
+        <article class="panel runtime-alert-panel">
+          <div class="panel-head compact-head">
+            <div>
+              <h2>统一异常面板</h2>
+              <p>预留 watchdog summary、关键词质量和 shared sync 的统一入口。</p>
+            </div>
+          </div>
+          <div id="runtime-alert-summary" class="sub-meta">等待运行态汇总。</div>
+          <div id="runtime-alert-list" class="list-block runtime-alert-list"></div>
+        </article>
+
+        <article class="panel task-center-panel admin-only">
+          <div class="panel-head compact-head">
+            <div>
+              <h2>任务中心</h2>
+              <p>手工创建关键词、类目和统一仓库同步任务。</p>
+            </div>
+          </div>
+          <form id="task-create-form" class="task-form">
+            <div class="filter-grid local-grid task-form-grid">
+              <label class="field">
+                <span class="field-label">任务类型</span>
+                <select id="task-type">
+                  <option value="category_ready_scan">类目批量扫描</option>
+                  <option value="category_single">单类目</option>
+                  <option value="keyword_once">单次关键词</option>
+                  <option value="keyword_monitor">关键词监控</option>
+                  <option value="warehouse_sync">仓库同步</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">类目</span>
+                <input id="task-category" type="text" placeholder="automotive / sports / baby" />
+              </label>
+              <label class="field">
+                <span class="field-label">关键词</span>
+                <input id="task-keyword" type="text" placeholder="baby monitor" />
+              </label>
+              <label class="field">
+                <span class="field-label">监控配置</span>
+                <input id="task-monitor-config" type="text" placeholder="config/keyword_monitor_pet_sports_batch.json" />
+              </label>
+              <label class="field">
+                <span class="field-label">抓取数量</span>
+                <input id="task-product-count" type="number" min="1" step="1" value="50" />
+              </label>
+              <label class="field">
+                <span class="field-label">优先级</span>
+                <input id="task-priority" type="number" min="1" step="1" value="10" />
+              </label>
+              <label class="field">
+                <span class="field-label">写入 Stage</span>
+                <select id="task-persist">
+                  <option value="true">On</option>
+                  <option value="false">Off</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">导出 Excel</span>
+                <select id="task-export-excel">
+                  <option value="false">Off</option>
+                  <option value="true">On</option>
+                </select>
+              </label>
+              <label class="field">
+                  <span class="field-label">Noon 数量</span>
+                <input id="task-noon-count" type="number" min="1" step="1" value="30" />
+              </label>
+              <label class="field">
+                  <span class="field-label">Amazon 数量</span>
+                <input id="task-amazon-count" type="number" min="1" step="1" value="30" />
+              </label>
+              <label class="field">
+                <span class="field-label">Schedule Type</span>
+                <select id="task-schedule-type">
+                  <option value="">none</option>
+                  <option value="once">once</option>
+                  <option value="cron">cron</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">Schedule Expr</span>
+                <input id="task-schedule-expr" type="text" placeholder="0 */4 * * *" />
+              </label>
+            </div>
+            <div class="button-row task-form-actions">
+              <div class="filter-summary">
+                <span class="filter-chip">手工任务优先于定时任务；category 与 keyword 可并行，但 sync 仍然全局单实例。</span>
+              </div>
+              <div class="button-row">
+                <button type="button" class="ghost-button" id="task-form-reset">重置表单</button>
+                <button type="submit" class="primary-button" id="task-form-submit">创建任务</button>
+              </div>
+            </div>
+            <div class="task-form-message" id="task-form-message"></div>
+          </form>
+        </article>
+
+        <div class="runs-console-grid">
+          <article class="panel runs-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>任务队列</h2>
+                <p>优先看未完成、失败和等待调度的任务。</p>
+              </div>
+            </div>
+            <div id="task-queue-list" class="list-block"></div>
+          </article>
+          <article class="panel runs-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>Workers</h2>
+                <p>查看 keyword、category 和 sync worker 的 heartbeat 与租约。</p>
+              </div>
+            </div>
+            <div id="task-workers-list" class="list-block"></div>
+          </article>
+        </div>
+
+        <div class="two-column-grid runs-activity-grid">
+          <article class="panel runs-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>任务运行记录</h2>
+                <p>查看最近 task run 的状态、耗时、失败原因与重试入口。</p>
+              </div>
+            </div>
+            <div id="task-runs-list" class="list-block"></div>
+          </article>
+          <article class="panel keyword-runs-panel">
+            <div class="panel-head compact-head">
+              <div>
+                <h2>链路活动</h2>
+                <p>保留关键词运行活动入口，但作为次级控制台模块。</p>
+              </div>
+            </div>
+            <div id="runs-keyword" class="list-block"></div>
+          </article>
+        </div>
+
+        <article class="panel runs-import-panel">
+          <div class="panel-head compact-head">
+            <div>
+              <h2>最近导入</h2>
+              <p>查看 stage 数据进入统一仓库的导入记录与写入规模。</p>
+            </div>
+          </div>
+          <div id="runs-imports" class="list-block"></div>
+        </article>
+      </section>
+
+      <section class="workspace workspace-favorites" id="view-favorites">
+        <div class="workspace-body favorites-shell">
+          <div class="workspace-main favorites-main">
+            <article class="panel favorites-summary-panel selection-summary-ribbon" id="favorites-summary-strip">
+              <p id="favorites-summary-meta">收藏的候选商品会在这里集中复查。</p>
+              <div id="favorites-summary-cards" class="fact-grid compact-fact-grid"></div>
+            </article>
+
+            <article class="panel products-table-panel favorites-table-panel" id="favorites-products-panel">
+              <div class="panel-head compact-head">
+                <div>
+                  <h2>收藏商品</h2>
+                  <p id="favorites-meta">按最近收藏顺序展示，点击商品可继续打开抽屉判断。</p>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table product-table favorites-product-table">
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>价格</th>
+                      <th>销量</th>
+                      <th>库存</th>
+                      <th>BSR</th>
+                      <th>Reviews</th>
+                      <th>Rating</th>
+                      <th>Rating 增长</th>
+                      <th>配送</th>
+                      <th>广告</th>
+                      <th>最近采集</th>
+                    </tr>
+                  </thead>
+                  <tbody id="favorites-body"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <aside class="drawer" id="product-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <div class="eyebrow">商品详情 / Product Drawer</div>
+        <h2 id="drawer-title">商品详情</h2>
+        <p id="drawer-summary">选择商品后查看价格、评论、BSR、配送和来源上下文。</p>
+        <div id="drawer-status-note" class="drawer-status-note" hidden></div>
+      </div>
+      <button type="button" class="ghost-button" id="drawer-close">关闭</button>
+    </div>
+    <div id="drawer-primary-actions" class="button-row drawer-actions"></div>
+    <div id="drawer-hero" class="drawer-hero"></div>
+    <div id="drawer-keyfacts" class="drawer-keyfacts"></div>
+    <div id="drawer-category-summary" class="drawer-category-summary"></div>
+    <div class="drawer-sections">
+      
+      <section class="drawer-panel active" id="drawer-panel-signals">
+        <div class="drawer-section-head">
+          <h3>公开信号明细</h3>
+        </div>
+        <div id="drawer-signals" class="detail-stack"></div>
+      </section>
+      <section class="drawer-panel active" id="drawer-panel-keywords">
+        <div class="drawer-section-head">
+          <h3>关键词命中明细</h3>
+        </div>
+        <div id="drawer-keyword-rankings" class="detail-stack"></div>
+      </section>
+      <section class="drawer-panel active" id="drawer-panel-sources">
+        <div class="drawer-section-head">
+          <h3>类目上下文</h3>
+        </div>
+        <div id="drawer-sources" class="detail-stack"></div>
+      </section>
+    </div>
+  </aside>
+
+  <div class="product-image-preview" id="product-image-preview" hidden aria-hidden="true"></div>
+
+  <section class="compare-tray is-collapsed is-empty" id="compare-tray">
+    <div class="compare-head">
+      <div>
+        <div class="eyebrow">对比托盘 / Compare Tray</div>
+        <h2>当前研究对比</h2>
+      </div>
+      <div class="button-row">
+        <button type="button" class="ghost-button" id="compare-clear">清空对比</button>
+      </div>
+    </div>
+    <div class="compare-columns">
+      <article class="compare-panel">
+        <div class="subsection-title">商品对比 / Product Compare</div>
+        <div id="compare-products" class="list-block"></div>
+      </article>
+      <article class="compare-panel">
+        <div class="subsection-title">关键词对比 / Keyword Compare</div>
+        <div id="compare-keywords" class="list-block"></div>
+      </article>
+    </div>
+  </section>
+
+  <script src="/static/app.contract.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.services.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.state.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.selection.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.favorites.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.home.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.keyword.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.drawer.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.runs.js?v=ui-v3-workbench-r45"></script>
+  <script src="/static/app.js?v=ui-v3-workbench-r46"></script>
+</body>
+</html>
+

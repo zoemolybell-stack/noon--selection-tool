@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Huihaokang daily crawl report at 10:00
+
+[Timer]
+OnCalendar=*-*-* 10:00:00
+Persistent=true
+Unit=huihaokang-crawl-report.service
+
+[Install]
+WantedBy=timers.target

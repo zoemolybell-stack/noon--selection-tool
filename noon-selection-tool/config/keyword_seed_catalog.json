@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "slug": "pet_supplies",
+      "label": "Pet Supplies",
+      "priority": 25,
+      "keywords": [
+        "pet supplies",
+        "dog food",
+        "cat food",
+        "cat litter",
+        "pet bed",
+        "dog toys",
+        "cat toys",
+        "pet carrier",
+        "dog leash",
+        "dog harness",
+        "pet grooming kit",
+        "automatic pet feeder",
+        "pet water fountain"
+      ]
+    },
+    {
+      "slug": "sports_outdoor",
+      "label": "Sports Outdoor",
+      "priority": 25,
+      "keywords": [
+        "sports equipment",
+        "outdoor gear",
+        "camping tent",
+        "camping chair",
+        "sleeping bag",
+        "hiking backpack",
+        "water bottle",
+        "cycling helmet",
+        "fishing rod",
+        "yoga mat",
+        "resistance bands",
+        "dumbbells",
+        "football",
+        "basketball",
+        "badminton racket"
+      ]
+    }
+  ]
+}

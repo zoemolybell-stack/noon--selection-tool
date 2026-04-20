@@ -1,0 +1,61 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+!noon-selection-tool/.env.example
+!noon-selection-tool/.env.nas.example
+!noon-selection-tool/.env.category-node.example
+
+# Local temp and probe artifacts
+tmp_*/
+tmp_chrome_*/
+tmp/
+tmp_nas_compare/
+archive/
+artifacts/
+.playwright-cli/
+*.tmp
+
+# Local logs
+*.log
+*.err.log
+*.out.log
+*.stderr.log
+*.stdout.log
+
+# Root generated data
+data/
+output/
+
+# Noon selection tool generated/runtime state
+noon-selection-tool/runtime_data/
+noon-selection-tool/data/
+noon-selection-tool/db/
+noon-selection-tool/logs/
+noon-selection-tool/monitor/
+noon-selection-tool/output/
+noon-selection-tool/browser_profiles/
+noon-selection-tool/.tmp/
+noon-selection-tool/tmp/
+noon-selection-tool/test-results/
+noon-selection-tool/node_modules/
+noon-selection-tool/dist/
+noon-selection-tool/warehouse.db
+noon-selection-tool/ssh/
+
+# Playwright outputs
+output/playwright/
+noon-selection-tool/output/playwright/
+noon-selection-tool/.playwright-cli/
