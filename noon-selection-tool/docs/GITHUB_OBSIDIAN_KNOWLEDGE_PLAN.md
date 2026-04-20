@@ -12,6 +12,15 @@ Last Updated: 2026-04-20
 - Obsidian：知识阅读、检索、编写入口
 - 本地 / NAS：运行时数据库、日志、快照、浏览器配置
 
+## Current Activated State
+
+当前已执行的收敛动作是：
+
+- repo `knowledge/` 已成为知识库唯一主源
+- Vault 六个知识目录已切换为指向 repo `knowledge/` 的目录链接
+- Vault 根目录重复定价笔记与重复 `AGENTS.md` 已清理
+- legacy Vault `workspace/` 不再允许继续作为代码主工作区
+
 ## Canonical Rules
 
 1. `D:\claude noon v1` 是当前 Git 工作树，Codex 直接基于这份 Git 代码执行开发任务。
@@ -30,9 +39,9 @@ Last Updated: 2026-04-20
 | `项目推进与调度/` | `knowledge/project-ops/` | Git 管理 | 迁入 Git |
 | `noon开发日记/` | `knowledge/dev-journal/` | Git 管理 | 迁入 Git |
 | `平台佣金/` | `knowledge/reference/pricing/` | Git 管理 | 迁入 Git |
-| Vault 根目录定价笔记 | `knowledge/reference/pricing/` | Git 管理 | 迁入 Git 并归到 pricing |
-| `workspace/` | 无 | 本地保留 | 废弃为长期主路径；不再继续扩展 |
-| Vault 根目录 `AGENTS.md` | 无 | 本地保留 | repo 根目录已有 canonical `AGENTS.md` |
+| Vault 根目录定价笔记 | `knowledge/reference/pricing/` | Git 管理 | 已迁入 Git；Vault 根目录重复文件已删除 |
+| `workspace/` | 无 | 非主路径 | 废弃；不再继续维护；未被占用时应删除 |
+| Vault 根目录 `AGENTS.md` | 无 | 非主路径 | repo 根目录已有 canonical `AGENTS.md`；Vault 重复文件已删除 |
 | 个人临时草稿 | 无或后续 `knowledge/` | 本地优先 | 成熟后再迁入 Git |
 
 ## Script Roles After Refactor
@@ -107,8 +116,8 @@ Last Updated: 2026-04-20
 推荐优先级如下：
 
 1. 最优：Obsidian 直接打开仓库内的 `knowledge/`
-2. 次优：使用 `scripts/link_repo_knowledge_into_obsidian.ps1` 建立 Vault 目录链接
-3. 过渡：继续使用旧 Vault 目录镜像，但不再维护完整 repo 副本
+2. 当前已启用：使用 `scripts/link_repo_knowledge_into_obsidian.ps1` 建立 Vault 目录链接
+3. 不再推荐：继续使用旧 Vault 目录镜像或维护完整 repo 副本
 
 ## Effect Boundary
 

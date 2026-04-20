@@ -494,6 +494,9 @@ Handling rule:
 - NAS stable release is live on retained-data Postgres
 - current NAS release:
   - `huihaokang-nas-20260413-runtime-quality-r56`
+- repo `knowledge/` is now the single shared knowledge source for Git + Obsidian
+- Vault knowledge folders are expected to be directory junctions into repo `knowledge/`
+- legacy Vault `workspace/` is deprecated and should be removed when it is no longer held open by a local process
 - local beta remains the only development baseline
 - fixed self-check is the mandatory entry gate before any new manual review
 - latest NAS browser smoke:

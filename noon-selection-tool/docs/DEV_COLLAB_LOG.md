@@ -1510,3 +1510,66 @@ Promote keyword control from source-scoped exclusion plumbing into an operator-f
   - keyword control is not for managing a lexicon as an end in itself
   - it is for reducing low-value crawl and focusing runtime on terms more likely to help find target products
 - NAS remained on the retained-data Postgres control plane after deployment
+## 2026-04-20 18:30 - Git and Obsidian knowledge sync switched to single-source junction mode
+
+### Theme
+
+Remove duplicate knowledge copies and make Git + Obsidian read the same files:
+- repo `knowledge/` becomes the only maintained knowledge source
+- Vault no longer keeps a second physical copy of the six shared knowledge folders
+- legacy duplicate files in the Vault root are removed
+
+### What Changed
+
+- Updated:
+  - [scripts/link_repo_knowledge_into_obsidian.ps1](D:/claude%20noon%20v1/scripts/link_repo_knowledge_into_obsidian.ps1)
+  - added support for:
+    - replacing old Vault folders with directory junctions
+    - removing legacy Vault root duplicates
+    - removing deprecated Vault `workspace/` when not held open
+    - removing temporary cutover backup folders after success
+- Updated:
+  - [OBSIDIAN_SYNC.md](D:/claude%20noon%20v1/noon-selection-tool/docs/OBSIDIAN_SYNC.md)
+  - now documents the active rule:
+    - repo `knowledge/` is canonical
+    - Vault shared folders should be junctions
+    - do not maintain two physical copies
+- Updated:
+  - [GITHUB_OBSIDIAN_KNOWLEDGE_PLAN.md](D:/claude%20noon%20v1/noon-selection-tool/docs/GITHUB_OBSIDIAN_KNOWLEDGE_PLAN.md)
+  - records the activated cutover mode and the post-cutover boundary
+- Updated:
+  - [DEV_HANDOFF.md](D:/claude%20noon%20v1/noon-selection-tool/docs/DEV_HANDOFF.md)
+  - current status now includes the Git/Obsidian single-source rule
+- Executed cutover in:
+  - `C:\Users\Admin\Documents\Obsidian Vault\noon`
+  - the following folders were switched to junctions:
+    - `系统架构知识库`
+    - `可复用方法论`
+    - `爬虫开发需求笔记`
+    - `项目推进与调度`
+    - `noon开发日记`
+    - `平台佣金`
+  - duplicate Vault root files removed:
+    - `AGENTS.md`
+    - `FBN模式费用&尺寸级别.md`
+    - `FBP & FBN 的差异.md`
+    - `noon-pricing-v6 拆解说明.md`
+
+### Validation
+
+- verified all six shared Vault folders are now `Junction`
+- verified each junction points to repo `knowledge/`
+- verified repo/vault file counts align for:
+  - `architecture`
+  - `methods`
+  - `requirements`
+  - `project-ops`
+  - `dev-journal`
+  - `pricing`
+- verified hash-level alignment before cutover so the repo copy was the latest source
+
+### Effect Boundary
+
+- no code-runtime, crawler-runtime, or database contract changed
+- this cutover only changes how shared docs/knowledge are stored and read
+- legacy Vault `workspace/` remains deprecated; if it is held open by a running local process, deletion must wait until the handle is released

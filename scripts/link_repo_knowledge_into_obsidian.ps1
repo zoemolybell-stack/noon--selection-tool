@@ -1,7 +1,10 @@
 param(
     [string]$RepoRoot = "D:\claude noon v1",
     [string]$VaultRoot = "C:\Users\Admin\Documents\Obsidian Vault\noon",
-    [switch]$ReplaceExisting
+    [switch]$ReplaceExisting,
+    [switch]$RemoveLegacyRootFiles,
+    [switch]$RemoveVaultWorkspace,
+    [switch]$RemoveBackupAfterLink
 )
 
 $ErrorActionPreference = "Stop"
@@ -40,6 +43,17 @@ function New-KnowledgeJunction {
     Write-Host "Created junction: $Target -> $Source"
 }
 
+function Remove-LegacyPath {
+    param([string]$Path)
+
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return
+    }
+
+    Remove-Item -LiteralPath $Path -Recurse -Force
+    Write-Host "Removed legacy path: $Path"
+}
+
 $backupRoot = Join-Path $VaultRoot ("_repo_knowledge_backup_" + (Get-Date -Format "yyyyMMdd-HHmmss"))
 
 $mapping = @(
@@ -55,9 +69,33 @@ foreach ($entry in $mapping) {
     New-KnowledgeJunction -Source $entry.Source -Target $entry.Target -BackupRoot $backupRoot -AllowReplace:$ReplaceExisting
 }
 
+if ($RemoveLegacyRootFiles) {
+    $legacyRootFiles = @(
+        (Join-Path $VaultRoot "AGENTS.md"),
+        (Join-Path $VaultRoot "FBN模式费用&尺寸级别.md"),
+        (Join-Path $VaultRoot "FBP & FBN 的差异.md"),
+        (Join-Path $VaultRoot "noon-pricing-v6 拆解说明.md")
+    )
+    foreach ($path in $legacyRootFiles) {
+        Remove-LegacyPath -Path $path
+    }
+}
+
+if ($RemoveVaultWorkspace) {
+    Remove-LegacyPath -Path (Join-Path $VaultRoot "workspace")
+}
+
+if ($RemoveBackupAfterLink -and (Test-Path -LiteralPath $backupRoot)) {
+    Remove-Item -LiteralPath $backupRoot -Recurse -Force
+    Write-Host "Removed backup root after successful link cutover: $backupRoot"
+}
+
 [pscustomobject]@{
     repo_root = $RepoRoot
     vault_root = $VaultRoot
     replace_existing = [bool]$ReplaceExisting
-    backup_root = $(if ($ReplaceExisting) { $backupRoot } else { "" })
+    remove_legacy_root_files = [bool]$RemoveLegacyRootFiles
+    remove_vault_workspace = [bool]$RemoveVaultWorkspace
+    remove_backup_after_link = [bool]$RemoveBackupAfterLink
+    backup_root = $(if ((Test-Path -LiteralPath $backupRoot) -and $ReplaceExisting) { $backupRoot } else { "" })
 } | ConvertTo-Json -Depth 4
