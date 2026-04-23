@@ -68,6 +68,7 @@ Read in this order:
 - [NAS_RELEASE_ROLLBACK.md](D:/claude%20noon%20v1/noon-selection-tool/docs/NAS_RELEASE_ROLLBACK.md)
 - [CLOUDFLARE_TUNNEL_ACCESS.md](D:/claude%20noon%20v1/noon-selection-tool/docs/CLOUDFLARE_TUNNEL_ACCESS.md)
 - [OBSIDIAN_SYNC.md](D:/claude%20noon%20v1/noon-selection-tool/docs/OBSIDIAN_SYNC.md)
+- [REMOTE_CATEGORY_MULTI_SLOT.md](D:/claude%20noon%20v1/noon-selection-tool/docs/REMOTE_CATEGORY_MULTI_SLOT.md)
 
 ## Historical / One-off Technical Notes
 

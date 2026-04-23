@@ -17,6 +17,7 @@ env/
 !noon-selection-tool/.env.example
 !noon-selection-tool/.env.nas.example
 !noon-selection-tool/.env.category-node.example
+!noon-selection-tool/.env.category-slots.example
 
 # Local temp and probe artifacts
 tmp_*/
